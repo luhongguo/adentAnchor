@@ -1,0 +1,12 @@
+﻿<div class="hd-nav">
+    <button class="am-show-sm-only am-collapsed" data-am-collapse="{target: '.hd-navul'}">∩_∩</button>
+    <nav>
+        <ul class="hd-navul am-collapse" style="height: 0px;">
+            <li @if(ViewBag.TagSelected == "index"){  string str = "class=on";  @str } ><a href="index.html">首页</a></li>
+            <li @if(ViewBag.TagSelected == "about"){  string str = "class=on";  @str }><a href="about.html">关于我们</a></li>
+            <li @if(ViewBag.TagSelected == "news"){  string str = "class=on";  @str }><a href="news.html">新闻资讯</a></li>
+            <li @if(ViewBag.TagSelected == "album"){  string str = "class=on";  @str }><a href="album.html">相册</a></li>
+            <li @if(ViewBag.TagSelected == "contact"){  string str = "class=on";  @str }><a href="contact.html">联系我们</a>
+        </ul>
+    </nav>
+</div>

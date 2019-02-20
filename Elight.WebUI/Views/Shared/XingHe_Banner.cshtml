@@ -1,0 +1,9 @@
+﻿<div class="am-cf"></div>
+<div class="am-slider am-slider-default" data-am-flexslider="{playAfterPaused: 8000}">
+    <ul class="am-slides">
+        @for (int i = 0; i < ViewBag.BannerList.Count; i++)
+        {
+            <li><img src="@ViewBag.BannerList[i].ImgUrl" /></li>
+        }
+    </ul>
+</div>
