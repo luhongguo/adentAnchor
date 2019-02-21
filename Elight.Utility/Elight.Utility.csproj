@@ -179,7 +179,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConstUtils.cs" />
-    <Compile Include="Exp\WxPayException.cs" />
     <Compile Include="Extension\DataCache\HttpRuntimeCache .cs" />
     <Compile Include="Extension\DataCache\RedisCache.cs" />
     <Compile Include="Extension\ExtDateTime.cs" />
@@ -197,10 +196,6 @@
     <Compile Include="Format\ConvertHelper.cs" />
     <Compile Include="Format\EnumHelper.cs" />
     <Compile Include="Format\JsonHelper.cs" />
-    <Compile Include="HttpUtils.cs" />
-    <Compile Include="JSONUtils.cs" />
-    <Compile Include="ListUtils.cs" />
-    <Compile Include="PositionUtils.cs" />
     <Compile Include="Log\LogHelper.cs" />
     <Compile Include="Mail\MailUtils.cs" />
     <Compile Include="Network\HttpMethods.cs" />
@@ -217,11 +212,8 @@
     <Compile Include="Security\AESHelper.cs" />
     <Compile Include="Security\Encrypt.cs" />
     <Compile Include="Security\VerifyCode.cs" />
-    <Compile Include="UUID.cs" />
     <Compile Include="Web\Keys.cs" />
     <Compile Include="Web\WebHelper.cs" />
-    <Compile Include="WePay\WxPayHelper.cs" />
-    <Compile Include="WePay\WxPayLogHelp.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="lib\Oracle.ManagedDataAccess.dll" />

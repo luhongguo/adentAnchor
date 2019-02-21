@@ -18,73 +18,46 @@ namespace Elight.Utility.Format
     public static class JsonHelper
     {
         /// <summary>
-        /// 对象序列化成JSON字符串。
+        /// 将JSON字符串反序列化成对象
         /// </summary>
-        /// <param name="obj">序列化对象</param>
-        /// <param name="ignoreProperties">设置需要忽略的属性</param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="baseEntity"></param>
+        /// <param name="strJson"></param>
         /// <returns></returns>
-        public static string ToJson(this object obj, params string[] ignoreProperties)
+        public static T ToObject<T>(T baseEntity, string strJson)
         {
-            JsonSerializerSettings settings = new JsonSerializerSettings();
-            settings.Formatting = Formatting.Indented;
-            settings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
-            settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            settings.ContractResolver = new JsonPropertyContractResolver(ignoreProperties);
-            return JsonConvert.SerializeObject(obj, settings);
+            return JsonConvert.DeserializeAnonymousType(strJson, baseEntity);
         }
+     
 
         /// <summary>
-        /// JSON字符串序列化成对象。
+        /// 将Json反序列化成对象
         /// </summary>
-        /// <typeparam name="T">对象类型</typeparam>
-        /// <param name="json">JSON字符串</param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="strJson"></param>
         /// <returns></returns>
-        public static T ToObject<T>(this string json)
+        public static T ToObject<T>(this string strJson)
         {
-            return json == null ? default(T) : JsonConvert.DeserializeObject<T>(json);
+            return JsonConvert.DeserializeObject<T>(strJson);
         }
+
 
         /// <summary>
-        /// JSON字符串序列化成集合。
+        /// 将对象转换层JSON字符串
         /// </summary>
-        /// <typeparam name="T">集合类型</typeparam>
-        /// <param name="json">JSON字符串</param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this string json)
+        public static string ToJson<T>(this T data)
         {
-            return json == null ? null : JsonConvert.DeserializeObject<List<T>>(json);
+            return JsonConvert.SerializeObject(data);
         }
 
-        /// <summary>
-        /// JSON字符串序列化成DataTable。
-        /// </summary>
-        /// <param name="json">JSON字符串</param>
-        /// <returns></returns>
-        public static DataTable ToTable(this string json)
-        {
-            return json == null ? null : JsonConvert.DeserializeObject<DataTable>(json);
-        }
-    }
 
-    /// <summary>
-    /// JSON分解器-设置。
-    /// </summary>
-    public class JsonPropertyContractResolver : DefaultContractResolver
-    {
-        /// <summary>
-        /// 需要排除的属性。
-        /// </summary>
-        private IEnumerable<string> _listExclude;
-
-        public JsonPropertyContractResolver(params string[] ignoreProperties)
+        public static List<T> JsonToList<T>(this string strJson)
         {
-            this._listExclude = ignoreProperties;
-        }
-
-        protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
-        {
-            //设置需要输出的属性。
-            return base.CreateProperties(type, memberSerialization).ToList().FindAll(p => !_listExclude.Contains(p.PropertyName));
+            T[] list = JsonConvert.DeserializeObject<T[]>(strJson);
+            return list.ToList();
         }
     }
 }

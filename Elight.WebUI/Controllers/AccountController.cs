@@ -55,7 +55,7 @@ namespace Elight.WebUI.Controllers
         public ActionResult PostTest(string str)
         {
             var obj = new { Method = "POST", Data = str };
-            return Content(JSONUtils.obj2Json(obj));
+            return Content(obj.ToJson());
         }
 
         /// <summary>
