@@ -1,36 +1,20 @@
-# Elight.MVC-ASP.NET
+# elight.mvc
+一款基于Web的通用管理系统轻量级解决方案。
+## 快速开发
+* 开发环境：VS2012及以上版本
+* 实验数据库：SQL Server 2008R2
+## 系统说明
+* Elight.MVC是一套基于 ASP.NET MVC5 + Layui开发的通用管理系统快速开发框架。
+* 支持SQL Server、MySQL、PostgreSQL、SQLite和Oracle等多种数据库类型。
+* 该解决方案适用于OA、电商平台、CRM、物流管理、教务管理等各类管理系统开发。
+* 兼容除IE8以下所有浏览器，暂不支持移动端。
+* 初始用户名：admin 密码：123456
+## 变更记录
+* 将EF框架改成SqlSugar
+* 数据库：MySQL5.6及以上版本
+* 升级了LayUI版本 目前版本:2.2.6
+* 修改了原来的一些bug
+* 简化了代码逻辑，更容易理解
+* 数据库DDL和DML 在App_Data下
+* 原始ASP.NET代码github：https://github.com/esofar/elight.mvc
 
-#### Description
-将ASP.NET平台下的Elight.MVC开源框架改写为Sqlsugar升级了LayUI版本
-
-#### Software Architecture
-Software architecture description
-
-#### Installation
-
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### Instructions
-
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### Contribution
-
-1. Fork the repository
-2. Create Feat_xxx branch
-3. Commit your code
-4. Create Pull Request
-
-
-#### Gitee Feature
-
-1. You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2. Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3. Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4. The most valuable open source project [GVP](https://gitee.com/gvp)
-5. The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6. The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
