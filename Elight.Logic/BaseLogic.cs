@@ -120,10 +120,11 @@ namespace Elight.Logic.Base
                     }
                 });
             }
-            db.Ado.IsEnableLogEvent = true;
-            db.Ado.LogEventStarting = (sql, pars) =>
+            //用来打印Sql方便你调式    
+            db.Aop.OnLogExecuting = (sql, pars) =>
             {
-                Console.WriteLine(sql + "\r\n" + db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
+                Console.WriteLine(sql + "\r\n" +
+                db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
                 Console.WriteLine();
             };
             return db;
