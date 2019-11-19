@@ -7,8 +7,8 @@
     <ProjectGuid>{8BC219D9-CF88-4397-8C71-B696519118DF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XingHe.Utility</RootNamespace>
-    <AssemblyName>XingHe.Utility</AssemblyName>
+    <RootNamespace>Elight.Utility</RootNamespace>
+    <AssemblyName>Elight.Utility</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
