@@ -1,4 +1,4 @@
-@{
+﻿@{
     Layout = null;
 }
 
@@ -101,7 +101,7 @@
         </div>
         <!-- 内容主体区域 end -->
         <div class="layui-footer" style="background-color:#FFFFFF">
-           <a id="footer1">备案号  Copyright ©xx公司 版权所有</a>
+            <a id="footer1">备案号  Copyright ©xx公司 版权所有</a>
         </div>
         <!-- 锁屏模板 start -->
         <script type="text/template" class="layui-lock-tpl">
@@ -118,7 +118,16 @@
     </div>
 </body>
 </html>
+<!--[if lt IE 9]>
+    <script src="/Content/jquery/jquery-1.9.1.min.js"></script>
+<![endif]-->
+<!--[if gte IE 9]><!-->
 <script src="~/Content/jquery/jquery.min.js"></script>
+<!--<![endif]-->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
 <script src="~/Content/jquery/jquery.md5.js"></script>
 <script src="~/Content/layui/layui.js"></script>
 <script src="~/Content/framework/js/global.js"></script>
@@ -132,7 +141,7 @@
 
     layui.config({ base: lay_modules_url });
 
-    layui.use(['element', 'layer', 'navbar', 'tab', 'donate'], function () {
+    layui.use(['element', 'layer', 'navbar', 'tab'], function () {
         var element = layui.element;
         var navbar = layui.navbar();
 

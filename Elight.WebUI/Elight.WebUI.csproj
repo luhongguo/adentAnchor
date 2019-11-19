@@ -525,6 +525,7 @@
     <Content Include="Content\iscroll\iscroll-probe.js" />
     <Content Include="Content\iscroll\iscroll-zoom.js" />
     <Content Include="Content\iscroll\iscroll.js" />
+    <Content Include="Content\jquery\jquery-1.9.1.min.js" />
     <Content Include="Content\jquery\jquery.date.js" />
     <Content Include="Content\jquery\jquery.md5.js" />
     <Content Include="Content\jquery\jquery.min.js" />
@@ -540,9 +541,8 @@
     <Content Include="Content\layui\css\layui.css" />
     <Content Include="Content\layui\css\layui.mobile.css" />
     <Content Include="Content\layui\css\modules\code.css" />
+    <Content Include="Content\layui\css\modules\laydate\default\font.css" />
     <Content Include="Content\layui\css\modules\laydate\default\laydate.css" />
-    <Content Include="Content\layui\css\modules\laydate\icon.png" />
-    <Content Include="Content\layui\css\modules\laydate\laydate.css" />
     <Content Include="Content\layui\css\modules\layer\default\icon-ext.png" />
     <Content Include="Content\layui\css\modules\layer\default\icon.png" />
     <Content Include="Content\layui\css\modules\layer\default\layer.css" />
@@ -622,12 +622,12 @@
     <Content Include="Content\layui\images\face\71.gif" />
     <Content Include="Content\layui\images\face\8.gif" />
     <Content Include="Content\layui\images\face\9.gif" />
-    <Content Include="Content\layui\layui.all.js" />
     <Content Include="Content\layui\layui.js" />
-    <Content Include="Content\layui\lay\dest\layui.all.js" />
-    <Content Include="Content\layui\lay\dest\layui.mod.js" />
-    <Content Include="Content\layui\lay\lib\jquery.js" />
+    <Content Include="Content\layui\lay\all-mobile.js" />
+    <Content Include="Content\layui\lay\all.js" />
+    <Content Include="Content\layui\lay\modules\carousel.js" />
     <Content Include="Content\layui\lay\modules\code.js" />
+    <Content Include="Content\layui\lay\modules\colorpicker.js" />
     <Content Include="Content\layui\lay\modules\element.js" />
     <Content Include="Content\layui\lay\modules\flow.js" />
     <Content Include="Content\layui\lay\modules\form.js" />
@@ -638,6 +638,13 @@
     <Content Include="Content\layui\lay\modules\laypage.js" />
     <Content Include="Content\layui\lay\modules\laytpl.js" />
     <Content Include="Content\layui\lay\modules\mobile.js" />
+    <Content Include="Content\layui\lay\modules\mobile\layer-mobile.js" />
+    <Content Include="Content\layui\lay\modules\mobile\layim-mobile-open.js" />
+    <Content Include="Content\layui\lay\modules\mobile\zepto.js" />
+    <Content Include="Content\layui\lay\modules\rate.js" />
+    <Content Include="Content\layui\lay\modules\slider.js" />
+    <Content Include="Content\layui\lay\modules\table.js" />
+    <Content Include="Content\layui\lay\modules\transfer.js" />
     <Content Include="Content\layui\lay\modules\tree.js" />
     <Content Include="Content\layui\lay\modules\upload.js" />
     <Content Include="Content\layui\lay\modules\util.js" />
@@ -1949,9 +1956,6 @@
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.woff" />
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.woff2" />
     <Content Include="Content\font-awesome\fonts\FontAwesome.otf" />
-    <Content Include="Content\layui\font\iconfont.eot" />
-    <Content Include="Content\layui\font\iconfont.ttf" />
-    <Content Include="Content\layui\font\iconfont.woff" />
     <Content Include="Content\ztree\css\awesomeStyle\awesome.less" />
     <Content Include="Content\ztree\css\awesomeStyle\fa.less" />
     <Content Include="Configs\AppSetting.config">
@@ -1985,6 +1989,10 @@
     <Content Include="Content\ueditor\third-party\video-js\font\vjs.eot" />
     <Content Include="Content\ueditor\third-party\video-js\font\vjs.ttf" />
     <Content Include="Content\ueditor\third-party\video-js\font\vjs.woff" />
+    <Content Include="Content\layui\font\iconfont.eot" />
+    <Content Include="Content\layui\font\iconfont.ttf" />
+    <Content Include="Content\layui\font\iconfont.woff" />
+    <Content Include="Content\layui\font\iconfont.woff2" />
     <None Include="Properties\PublishProfiles\发布.pubxml" />
     <Content Include="Scripts\esm\popper-utils.js" />
     <Content Include="Scripts\esm\popper-utils.min.js" />
@@ -2046,12 +2054,6 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Views\Shared\XingHe_Banner.cshtml" />
-    <Content Include="Views\Shared\XingHe_Navi.cshtml" />
-    <Content Include="Views\Shared\XingHe_Head.cshtml" />
-    <Content Include="Views\Shared\XingHe_Header.cshtml" />
-    <Content Include="Views\Shared\XingHe_Banner1.cshtml" />
-    <Content Include="Views\Shared\XingHe_Footer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\System\Models\" />
