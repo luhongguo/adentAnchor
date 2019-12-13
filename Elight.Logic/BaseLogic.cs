@@ -1,4 +1,4 @@
-﻿using SqlSugar;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -81,7 +81,7 @@ namespace Elight.Logic.Base
             {
                 db = new SqlSugarClient(new ConnectionConfig()
                 {
-                    ConnectionString = _SQLServerConnString,
+                    ConnectionString = _OracleConnString,
                     DbType = DbType.Oracle,
                     IsAutoCloseConnection = true,
                     ConfigureExternalServices = new ConfigureExternalServices()
