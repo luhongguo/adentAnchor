@@ -4,3 +4,14 @@
 !.vscode/launch.json
 !.vscode/extensions.json
  
+/.vs/Elight.MVC/v16
+/Elight.Entity/bin/Debug
+/Elight.Entity/obj/Debug
+/Elight.Logic/bin/Debug
+/Elight.Logic/obj/Debug
+/Elight.Utility/bin/Debug
+/Elight.Utility/obj/Debug
+/Elight.WebUI/bin
+/Elight.WebUI/obj/Debug
+
+/packages
