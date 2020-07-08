@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -98,8 +99,7 @@ namespace Elight.Utility.Files
                         headStyle.SetFont(font);
 
                         headerRow.GetCell(0).CellStyle = headStyle;
-
-                        sheet.AddMergedRegion(new Region(0, 0, 0, dtSource.Columns.Count - 1));
+                        sheet.AddMergedRegion(new CellRangeAddress(0, 0, 0, dtSource.Columns.Count - 1));
                         //headerRow.Dispose();  
                     }
 
@@ -1260,7 +1260,7 @@ namespace Elight.Utility.Files
                             font.Boldweight = 700;
                             headStyle.SetFont(font);
                             headerRow.GetCell(0).CellStyle = headStyle;
-                            sheet.AddMergedRegion(new Region(0, 0, 0, dtSource.Columns.Count - 1));
+                            sheet.AddMergedRegion(new CellRangeAddress(0, 0, 0, dtSource.Columns.Count - 1));
                             //headerRow.Dispose();  
                         }
                     }

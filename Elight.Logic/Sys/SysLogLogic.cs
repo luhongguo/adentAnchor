@@ -59,10 +59,6 @@ namespace Elight.Logic.Sys
                 {
 
                 }
-                finally
-                {
-                    LogHelper.Write(level, operation, message, account, realName);
-                }
             }
         }
     }

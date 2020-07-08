@@ -12,6 +12,7 @@
 ## 变更记录
 * 将EF框架改成SqlSugar
 * 数据库：MySQL5.6及以上版本
+* 默认使用SQLite 如果要使用其他数据库 请到Eligt.MVC/Configs/AppSetting.config中修改连接字符串
 * 升级了LayUI版本 目前版本:2.2.6
 * 修改了原来的一些bug
 * 简化了代码逻辑，更容易理解

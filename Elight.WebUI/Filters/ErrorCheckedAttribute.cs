@@ -20,9 +20,6 @@ namespace Elight.WebUI.Filters
             filterContext.HttpContext.Response.StatusCode = 500;
             filterContext.ExceptionHandled = true;
             StringBuilder script = new StringBuilder();
-
-            LogHelper.Error(filterContext.Exception.StackTrace);
-
             if (OperatorProvider.Instance.Current == null)
             {
                 script.Append("<script>top.alert('登陆超时，请重新认证。'); top.window.location.href='/Account/Login'</script>");
@@ -31,7 +28,6 @@ namespace Elight.WebUI.Filters
             else
             {
                 Operator onlineUser = OperatorProvider.Instance.Current;
-                LogHelper.Write(Level.Error, "程序抛异常", filterContext.Exception.StackTrace, onlineUser.Account, onlineUser.RealName);
                 new LogLogic().Write(Level.Error, "程序抛异常", filterContext.Exception.StackTrace, onlineUser.Account, onlineUser.RealName);
                 script.Append("<script>top.window.alert('系统出现异常，请联系开发人员确认。');</script>");
                 filterContext.Result = new ContentResult() { Content = script.ToString() };
