@@ -21,11 +21,13 @@ namespace Elight.WebUI.Areas.System.Controllers
         private SysUserLogic userLogic;
         private SysUserRoleRelationLogic userRoleRelationLogic;
         private SysUserLogOnLogic userLogOnLogic;
+        private SysUserAnchorLogic userAnchorLogic;
         public UserController()
         {
             userLogic = new SysUserLogic();
             userRoleRelationLogic = new SysUserRoleRelationLogic();
             userLogOnLogic = new SysUserLogOnLogic();
+            userAnchorLogic = new SysUserAnchorLogic();
         }
 
 
@@ -73,7 +75,7 @@ namespace Elight.WebUI.Areas.System.Controllers
                 DateTime.TryParse(model.StrBirthday + " 00:00:00", out defaultDt);
                 model.Birthday = defaultDt;
                 //更新用户基本信息。
-                int row = userLogic.UpdateAndSetRole(model, roleIds.ToStrArray());
+                int row = userLogic.UpdateAndSetRole(model, password, roleIds.ToStrArray());
                 //更新用户角色信息。
                 return row > 0 ? Success() : Error();
             }
@@ -89,9 +91,8 @@ namespace Elight.WebUI.Areas.System.Controllers
         public ActionResult GetForm(string primaryKey)
         {
             SysUser entity = userLogic.Get(primaryKey);
-            entity.StrBirthday = entity.Birthday.Value.ToString("yyyy-MM-dd");
             entity.RoleId = userRoleRelationLogic.GetList(entity.Id).Select(c => c.RoleId).ToList();
-
+            entity.StrBirthday = entity.Birthday.Value.ToString("yyyy-MM-dd");
             return Content(entity.ToJson());
         }
 
@@ -102,6 +103,7 @@ namespace Elight.WebUI.Areas.System.Controllers
             int row = userLogic.Delete(userIds.ToStrArray());
             userRoleRelationLogic.Delete(userIds.ToStrArray());
             userLogOnLogic.Delete(userIds.ToStrArray());
+            userAnchorLogic.Delete(userIds.ToStrArray());
             return row > 0 ? Success() : Error();
         }
 

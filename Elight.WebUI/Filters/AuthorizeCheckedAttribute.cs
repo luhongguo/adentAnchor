@@ -31,29 +31,31 @@ namespace Elight.WebUI.Filters
             {
                 return;
             };
-
-            string userId = null;
             try
             {
-                userId = OperatorProvider.Instance.Current.UserId;
+                var current = OperatorProvider.Instance.Current;
+                if (current == null)
+                {
+                    StringBuilder script = new StringBuilder();
+                    script.Append("<script>alert('对不起，Session已过期，请重新登录');</script>");
+                    filterContext.Result = new ContentResult() { Content = script.ToString() };
+                }
+                else
+                {
+                    var action = HttpContext.Current.Request.ServerVariables["SCRIPT_NAME"].ToString();
+                    bool hasPermission = logic.ActionValidate(current.UserId, action);
+                    if (!hasPermission)
+                    {
+                        StringBuilder script = new StringBuilder();
+                        script.Append("<script>alert('对不起，您没有权限访问当前页面。');</script>");
+                        filterContext.Result = new ContentResult() { Content = script.ToString() };
+                    }
+                }
             }
             catch (Exception ex)
             {
-                StringBuilder script = new StringBuilder();
-                script.Append("<script>alert('对不起，Session已过期，请重新登录');</script>");
-                filterContext.Result = new ContentResult() { Content = script.ToString() };
                 return;
             }
-            var action = HttpContext.Current.Request.ServerVariables["SCRIPT_NAME"].ToString();
-            bool hasPermission = logic.ActionValidate(userId, action);
-            if (!hasPermission)
-            {
-                StringBuilder script = new StringBuilder();
-                script.Append("<script>alert('对不起，您没有权限访问当前页面。');</script>");
-                filterContext.Result = new ContentResult() { Content = script.ToString() };
-            }
         }
-
-
     }
 }

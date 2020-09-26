@@ -20,8 +20,8 @@ namespace Elight.Entity.Sys
         [SugarColumn(ColumnName = "RealName")]
         public string RealName { get; set; }
 
-        [SugarColumn(ColumnName = "NickName")]
-        public string NickName { get; set; }
+        [SugarColumn(ColumnName = "CompanyCode")]
+        public string CompanyCode { get; set; }
 
         [SugarColumn(ColumnName = "Avatar")]
         public string Avatar { get; set; }
@@ -74,9 +74,11 @@ namespace Elight.Entity.Sys
 
         [SugarColumn(ColumnName = "ModifyTime")]
         public DateTime? ModifyTime { get; set; }
-
+        /// <summary>
+        /// 角色类型 1管理员，2经纪人，3其他
+        /// </summary>
         [SugarColumn(IsIgnore = true)]
-        public string DeptName { get; set; } //{ get { return OrganizeSingle == null ? "" : OrganizeSingle.FullName; } }
+        public int? Type { get; set; } //{ get { return OrganizeSingle == null ? "" : OrganizeSingle.FullName; } }
 
         [SugarColumn(IsIgnore = true)]
         public string StrBirthday { get; set; }

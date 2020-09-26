@@ -46,12 +46,20 @@ namespace Elight.Entity.Sys
 
         [SugarColumn(ColumnName = "SortCode")]
         public int? SortCode { get; set; }
-
+        /// <summary>
+        /// 是否公开 0否  1是
+        /// </summary>
         [SugarColumn(ColumnName = "IsPublic")]
         public string IsPublic { get; set; }
+        /// <summary>
+        /// 是否可用0否  1是
+        /// </summary>
 
         [SugarColumn(ColumnName = "IsEnable")]
         public string IsEnable { get; set; }
+        /// <summary>
+        /// 是否编辑0否  1是
+        /// </summary>
 
         [SugarColumn(ColumnName = "IsEdit")]
         public string IsEdit { get; set; }

@@ -62,27 +62,16 @@ namespace Elight.Utility.Operator
         {
             get
             {
-                Operator operatorModel = new Operator();
-                if (LoginProvider == "Cookie")
+                Operator operatorModel = null;
+                if (!string.IsNullOrEmpty(WebHelper.GetSession(LOGIN_USER_KEY)))
                 {
-                    operatorModel = WebHelper.GetCookie(LOGIN_USER_KEY).DESDecrypt().ToObject<Operator>();
-                }
-                else
-                {
-                    operatorModel = WebHelper.GetSession(LOGIN_USER_KEY).DESDecrypt().ToObject<Operator>();
+                    operatorModel = WebHelper.GetSession(LOGIN_USER_KEY).ToObject<Operator>();
                 }
                 return operatorModel;
             }
             set
             {
-                if (LoginProvider == "Cookie")
-                {
-                    WebHelper.SetCookie(LOGIN_USER_KEY, value.ToJson().DESEncrypt(), LoginTimeout);
-                }
-                else
-                {
-                    WebHelper.SetSession(LOGIN_USER_KEY, value.ToJson().DESEncrypt(), LoginTimeout);
-                }
+                WebHelper.SetSession(LOGIN_USER_KEY, value.ToJson(), LoginTimeout);
             }
         }
 
@@ -119,5 +108,9 @@ namespace Elight.Utility.Operator
         public string Token { get; set; }
         public DateTime LoginTime { get; set; }
         public string ClientUrl { get; set; }
+        /// <summary>
+        /// 用户角色类型 1管理员，2经纪人，3其他
+        /// </summary>
+        public int? Type { get; set; }
     }
 }

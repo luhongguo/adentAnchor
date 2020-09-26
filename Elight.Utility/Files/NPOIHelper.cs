@@ -95,7 +95,7 @@ namespace Elight.Utility.Files
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
                         HSSFFont font = workbook.CreateFont() as HSSFFont;
                         font.FontHeightInPoints = 20;
-                        font.Boldweight = 700;
+                        font.IsBold=true;
                         headStyle.SetFont(font);
 
                         headerRow.GetCell(0).CellStyle = headStyle;
@@ -116,7 +116,7 @@ namespace Elight.Utility.Files
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
                         HSSFFont font = workbook.CreateFont() as HSSFFont;
                         font.FontHeightInPoints = 10;
-                        font.Boldweight = 700;
+                        font.IsBold=true;
                         headStyle.SetFont(font);
 
 
@@ -287,7 +287,7 @@ namespace Elight.Utility.Files
                     //    headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;  
                     //    XSSFFont font = workbook.CreateFont() as XSSFFont;  
                     //    font.FontHeightInPoints = 20;  
-                    //    font.Boldweight = 700;  
+                    //    font.IsBold=true;  
                     //    headStyle.SetFont(font);  
 
                     //    headerRow.GetCell(0).CellStyle = headStyle;  
@@ -309,7 +309,7 @@ namespace Elight.Utility.Files
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
                         XSSFFont font = workbook.CreateFont() as XSSFFont;
                         font.FontHeightInPoints = 10;
-                        font.Boldweight = 700;
+                        font.IsBold=true;
                         headStyle.SetFont(font);
 
 
@@ -1257,7 +1257,7 @@ namespace Elight.Utility.Files
                             //headStyle.Alignment = CellHorizontalAlignment.CENTER;  
                             HSSFFont font = workbook.CreateFont() as HSSFFont;
                             font.FontHeightInPoints = 20;
-                            font.Boldweight = 700;
+                            font.IsBold = true;
                             headStyle.SetFont(font);
                             headerRow.GetCell(0).CellStyle = headStyle;
                             sheet.AddMergedRegion(new CellRangeAddress(0, 0, 0, dtSource.Columns.Count - 1));
@@ -1273,7 +1273,7 @@ namespace Elight.Utility.Files
                         //headStyle.Alignment = CellHorizontalAlignment.CENTER;  
                         HSSFFont font = workbook.CreateFont() as HSSFFont;
                         font.FontHeightInPoints = 10;
-                        font.Boldweight = 700;
+                        font.IsBold = true;
                         headStyle.SetFont(font);
                         foreach (DataColumn column in dtSource.Columns)
                         {
@@ -1401,7 +1401,7 @@ namespace Elight.Utility.Files
                 HSSFCellStyle headStyle = workbook.CreateCellStyle() as HSSFCellStyle;
                 HSSFFont font = workbook.CreateFont() as HSSFFont;
                 font.FontHeightInPoints = 10;
-                font.Boldweight = 700;
+                font.IsBold = true;
                 headStyle.SetFont(font);
 
                 //取得列宽  

@@ -28,7 +28,7 @@ namespace Elight.Utility.Format
         {
             return JsonConvert.DeserializeAnonymousType(strJson, baseEntity);
         }
-     
+
 
         /// <summary>
         /// 将Json反序列化成对象

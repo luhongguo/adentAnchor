@@ -76,7 +76,6 @@ namespace Elight.WebUI.Areas.System.Controllers
         {
             SysRole entity = roleLogic.Get(primaryKey);
             entity.IsEnabled = entity.IsEnabled == "1" ? "true" : "false";
-            entity.AllowEdit = entity.AllowEdit == "1" ? "true" : "false";
             return Content(entity.ToJson());
         }
 

@@ -15,16 +15,39 @@ namespace Elight.Logic.Base
         public static readonly bool _RedisCache = Convert.ToBoolean(ConfigurationManager.AppSettings["RedisCache"]);
         public static readonly string _RedisHost = ConfigurationManager.AppSettings["RedisHost"];
         public static readonly int _RedisPort = Convert.ToInt32(ConfigurationManager.AppSettings["RedisPort"]);
-        public static readonly string _SQLServerConnString = ConfigurationManager.AppSettings["SQLServerConnString"];
-        public static readonly string _MySQLConnString = ConfigurationManager.AppSettings["MySQLConnString"];
-        public static readonly string _OracleConnString = ConfigurationManager.AppSettings["OracleConnString"];
-        public static readonly string _SQLiteConnString = ConfigurationManager.AppSettings["SQLiteConnString"];
+        public static readonly string QPAgentAnchorDB = ConfigurationManager.AppSettings["QPAgentAnchorDB"];
+        public static readonly string QPVideoAnchorDB = ConfigurationManager.AppSettings["QPVideoAnchorDB"];
         public static readonly string _DBType = ConfigurationManager.AppSettings["DBType"];
+        public enum DbConnType
+        {
+            /// <summary>
+            /// 管理后台
+            /// </summary>
+            QPVideoAnchorDB,
+            /// <summary>
+            /// 流水记录
+            /// </summary>
+            QPAnchorRecordDB,
+            /// <summary>
+            /// 电影记录
+            /// </summary>
+            MovieDB,
+            /// <summary>
+            /// 主播个性化
+            /// </summary>
+            AnchorPersonaliseDb,
+            /// <summary>
+            /// 经纪人主播管理
+            /// </summary>
+            QPAgentAnchorDB
+        }
 
+        /// <summary>
+        /// QPAgentAnchorDB数据库操作
+        /// </summary>
+        /// <returns></returns>
         public static SqlSugarClient GetInstance()
         {
-            SqlSugarClient db = null;
-
             ICacheService cacheService = null;
             if (_RedisCache)
             {
@@ -35,98 +58,82 @@ namespace Elight.Logic.Base
                 cacheService = new HttpRuntimeCache();
             }
 
-            if (_DBType == "SQLServer")
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
-                db = new SqlSugarClient(new ConnectionConfig()
+                ConnectionString = QPAgentAnchorDB,
+                DbType = DbType.SqlServer,
+                IsAutoCloseConnection = true,
+                ConfigureExternalServices = new ConfigureExternalServices()
                 {
-                    ConnectionString = _SQLServerConnString,
-                    DbType = DbType.SqlServer,
-                    IsAutoCloseConnection = true,
-                    ConfigureExternalServices = new ConfigureExternalServices()
-                    {
-                        SqlFuncServices = ExtMethods.GetExpMethods,
-                        DataInfoCacheService = cacheService
-                    }
-                });
-            }
-            else if (_DBType == "MySQL")
-            {
-                db = new SqlSugarClient(new ConnectionConfig()
-                {
-                    ConnectionString = _MySQLConnString,
-                    DbType = DbType.MySql,
-                    IsAutoCloseConnection = true,
-                    ConfigureExternalServices = new ConfigureExternalServices()
-                    {
-                        SqlFuncServices = ExtMethods.GetExpMethods,
-                        DataInfoCacheService = cacheService
-                    }
-                });
-            }
-            else if (_DBType == "SQLite")
-            {
-                db = new SqlSugarClient(new ConnectionConfig()
-                {
-                    ConnectionString = _SQLiteConnString,
-                    DbType = DbType.Sqlite,
-                    IsAutoCloseConnection = true,
-                    ConfigureExternalServices = new ConfigureExternalServices()
-                    {
-                        SqlFuncServices = ExtMethods.GetExpMethods,
-                        DataInfoCacheService = cacheService
-                    }
-                });
-            }
-            else if (_DBType == "Oracle")
-            {
-                db = new SqlSugarClient(new ConnectionConfig()
-                {
-                    ConnectionString = _OracleConnString,
-                    DbType = DbType.Oracle,
-                    IsAutoCloseConnection = true,
-                    ConfigureExternalServices = new ConfigureExternalServices()
-                    {
-                        SqlFuncServices = ExtMethods.GetExpMethods,
-                        DataInfoCacheService = cacheService
-                    }
-                });
-            }
-            // 暂时不支持
-            //else if (_DBType == "Postgresql")
+                    SqlFuncServices = ExtMethods.GetExpMethods,
+                    DataInfoCacheService = cacheService
+                }
+            });
+            //用来打印Sql方便你调式    
+            //db.Aop.OnLogExecuting = (sql, pars) =>
             //{
-            //    db = new SqlSugarClient(new ConnectionConfig()
-            //    {
-            //        ConnectionString = _PostgreSqlConnString,
-            //        DbType = DbType.PostgreSQL,
-            //        IsAutoCloseConnection = true,
-            //        ConfigureExternalServices = new ConfigureExternalServices()
-            //        {
-            //            SqlFuncServices = ExtMethods.GetExpMethods,
-            //            DataInfoCacheService = cacheService
-            //        }
-            //    });
-            //}
+            //    Console.WriteLine(sql + "\r\n" +
+            //    db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
+            //    Console.WriteLine();
+            //};
+            return db;
+        }
+        /// <summary>
+        /// QPVideoAnchorDB数据库操作
+        /// </summary>
+        /// <returns></returns>
+        public static SqlSugarClient GetSqlSugarDB(DbConnType type)
+        {
+            var strConnectionString = "";
+            switch (type)
+            {
+                case DbConnType.QPAgentAnchorDB:
+                    strConnectionString = ConfigurationManager.AppSettings["QPAgentAnchorDB"];
+                    break;
+                case DbConnType.QPVideoAnchorDB:
+                    strConnectionString= ConfigurationManager.AppSettings["QPVideoAnchorDB"];
+                    break;
+                case DbConnType.QPAnchorRecordDB:
+                    strConnectionString= ConfigurationManager.AppSettings["QPAnchorRecordDB"];
+                    break;
+                case DbConnType.MovieDB:
+                    strConnectionString= ConfigurationManager.AppSettings["MovieRecordDb"];
+                    break;
+                case DbConnType.AnchorPersonaliseDb:
+                    strConnectionString= ConfigurationManager.AppSettings["AnchorPersonaliseDb"];
+                    break;
+                default:
+                    strConnectionString= ConfigurationManager.AppSettings["QPVideoAnchorDB"];
+                    break;
+            }
+            ICacheService cacheService = null;
+            if (_RedisCache)
+            {
+                cacheService = new RedisCache(_RedisHost, _RedisPort);
+            }
             else
             {
-                db = new SqlSugarClient(new ConnectionConfig()
-                {
-                    ConnectionString = _MySQLConnString,
-                    DbType = DbType.MySql,
-                    IsAutoCloseConnection = true,
-                    ConfigureExternalServices = new ConfigureExternalServices()
-                    {
-                        SqlFuncServices = ExtMethods.GetExpMethods,
-                        DataInfoCacheService = cacheService
-                    }
-                });
+                cacheService = new HttpRuntimeCache();
             }
-            //用来打印Sql方便你调式    
-            db.Aop.OnLogExecuting = (sql, pars) =>
+
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
-                Console.WriteLine(sql + "\r\n" +
-                db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
-                Console.WriteLine();
-            };
+                ConnectionString = strConnectionString,
+                DbType = DbType.SqlServer,
+                IsAutoCloseConnection = true,
+                ConfigureExternalServices = new ConfigureExternalServices()
+                {
+                    SqlFuncServices = ExtMethods.GetExpMethods,
+                    DataInfoCacheService = cacheService
+                }
+            });
+            //用来打印Sql方便你调式    
+            //db.Aop.OnLogExecuting = (sql, pars) =>
+            //{
+            //    Console.WriteLine(sql + "\r\n" +
+            //    db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
+            //    Console.WriteLine();
+            //};
             return db;
         }
     }

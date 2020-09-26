@@ -1,0 +1,203 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>主播工时明细</title>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Content/framework/css/console.css" rel="stylesheet" />
+    <script src="~/Content/jquery/jquery.min.js"></script>
+    <script src="~/Content/layui/layui.js"></script>
+    <script src="~/Content/dataTime/dataTime.js"></script>
+</head>
+<body>
+    <div class="panel animated fadeIn">
+        <div class="panel-body">
+            <blockquote class="layui-elem-quote">
+                <div class="form-inline layui-form user-search">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">主播昵称</label>
+                        <div class="layui-input-block">
+                            <select name="userName" id="UserNameReload" lay-filter="Level" lay-search>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">是否直播</label>
+                        <div class="layui-input-block">
+                            <select name="isLive" id="isLiveReload" lay-filter="Level" lay-search>
+                                <option value="-1">全部</option>
+                                <option value="1">是</option>
+                                <option value="0">否</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">开始时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="startTimeReload" name="startTime" placeholder="">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">结束时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="endTimeReload" name="endTime" placeholder="">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="search" data-type="reload">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                </div>
+            </blockquote>
+            <table id="table" lay-filter="table"></table>
+        </div>
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+    layui.use(['laydate', 'form', 'table'], function () {
+        var laydate = layui.laydate;
+        var form = layui.form;
+        var table = layui.table;
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#startTimeReload' //指定元素
+            , type: 'datetime'
+            , value: getNowFormatDate("data", 0) + " 00:00:00"
+        });
+        laydate.render({
+            elem: '#endTimeReload' //指定元素
+            , type: 'datetime'
+            , value: getNowFormatDate("data", 1) + " 00:00:00"
+        });
+
+        $.ajax({
+            url: "/System/UserAnchor/AnchorUserIDSelect",
+            type: "get",
+            success: function (data) {
+                //if (data == "[]") {
+                //    return layer.msg("没有主播，请联系管理员添加！");
+                //}
+                var $html = "<option value='-1' selected>全部</option>";
+                $.each(eval("(" + data + ")"), function (i, v) {
+                    $html += "<option value='" + v.id + "' >" + v.nickName + "</option>";
+                })
+                $("select[name='userName']").append($html);
+                //append后必须从新渲染
+                form.render('select');
+                renderTable(getWhere());
+            }
+        }, 'json');
+        function renderTable(where) {
+            table.render({
+                elem: '#table'
+                , method: "post"
+                , url: '/System/UserAnchor/GetHourDetailsPage' //数据接口
+                , page: true //开启分页
+                , where: where
+                , totalRow: true
+                , cols: [[ //表头
+                    { field: 'AnchorName', title: '主播账号', totalRowText: '合计：' }
+                    , { field: 'NickName', title: '主播昵称' }
+                    , { field: 'begintime', title: '开播时间', width: 160 }
+                    , {
+                        field: 'endtime', title: '停播时间', width: 160, templet: function (d) {
+                            if (d.endtime == null) {
+                                return '';
+                            } else {
+                                return d.endtime;
+                            }
+                        }
+                    }
+                    , { field: 'duration', title: '持续时间(分钟)', totalRow: true }
+                    , {
+                        field: 'islive', title: '是否直播', templet: function (d) {
+                            if (d.islive == 1) {
+                                return '<span class="label label-success label-sm">是</span>';
+                            } else {
+                                return '<span class="label label-dark label-sm">否</span>';
+                            }
+                        }
+                    }
+                    , {
+                        field: 'source', title: '来源', templet: function (d) {
+                            if (d.source == 0) {
+                                return '<span class="label label-success label-sm">腾讯</span>';
+                            } else {
+                                return '<span class="label label-dark label-sm">阿里</span>';
+                            }
+                        }
+                    }
+                ]]
+                , request: {
+                    pageName: 'parm.page' //页码的参数名称，默认：page
+                    , limitName: 'parm.limit' //每页数据量的参数名，默认：limit
+                }
+                , limit: 10
+                , id: "report"
+            });
+        }
+        //监听搜索
+        form.on('submit(search)', function (data) {
+            reloadTable(data.field)
+        });
+        //监听下拉框的搜索
+        form.on('select(Level)', function (data) {
+            var userName = $("#UserNameReload").val()
+            var startTime = $("#startTimeReload").val();
+            var endTime = $("#endTimeReload").val();
+            var isLive = $("#isLiveReload").val()
+            var obj = { userName: userName, startTime: startTime, endTime: endTime, isLive: isLive }
+            reloadTable(obj);
+        });
+        function getWhere() {
+            var userName = $("#UserNameReload").val()
+            var startTime = $("#startTimeReload").val();
+            var endTime = $("#endTimeReload").val();
+            var isLive = $("#isLiveReload").val()
+            return { "parm.where": JSON.stringify({ userName: userName, startTime: startTime, endTime: endTime, isLive: isLive  }) };
+            //var where = {
+            //    page: 1, where: JSON.stringify({ "parm.where": { userName: userName, startTime: startTime, endTime: endTime } })
+            //}
+        }
+        function reloadTable(field) {
+            //if (field.userName == "") {
+            //    return layer.msg("没有主播，请联系管理员添加！");
+            //}
+            if (field.endTime != "" && field.startTime == "") {
+                return layer.msg("开始时间不能为空");
+            }
+            if (field.endTime == "" && field.startTime != "") {
+                return layer.msg("结束时间不能为空");
+            }
+            if (field.endTime < field.startTime) {
+                return layer.msg("开始时间不能大于结束时间");
+            }
+            var starttime = new Date(field.startTime);
+            var endtime = new Date(field.endTime);
+            var nowDate = new Date();
+            if (starttime > nowDate) {
+                layer.msg("开始时间不能大于当前时间！");
+                return;
+            }
+            //执行重载
+            table.reload('report', {
+                page: {
+                    curr: 1
+                },
+                where: {
+                    "parm.where": JSON.stringify(field)
+                }
+            });
+        }
+
+    });
+</script>

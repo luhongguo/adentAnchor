@@ -18,7 +18,9 @@ namespace Elight.Entity.Sys
 
         [SugarColumn(ColumnName = "EnCode")]
         public string EnCode { get; set; }
-
+        /// <summary>
+        /// 角色类型  1管理员 ，2经纪人，3其他。后台根据角色类型，展示数据
+        /// </summary>
         [SugarColumn(ColumnName = "Type")]
         public int? Type { get; set; }
 

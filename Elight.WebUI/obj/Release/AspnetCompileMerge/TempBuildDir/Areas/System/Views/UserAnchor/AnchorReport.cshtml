@@ -1,0 +1,168 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>主播财务报表</title>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Content/framework/css/console.css" rel="stylesheet" />
+    @*<link href="~/Content/framework/css/animate.css" rel="stylesheet" />
+        <link href="~/Content/font-awesome/css/font-awesome.min.css" rel="stylesheet" />*@
+    <script src="~/Content/jquery/jquery.min.js"></script>
+    <script src="~/Content/layui/layui.js"></script>
+    <script src="~/Content/dataTime/dataTime.js"></script>
+    @*<script src="~/Content/framework/js/global.js"></script>*@
+</head>
+<body>
+    <div class="panel animated fadeIn">
+        <div class="panel-body">
+            <blockquote class="layui-elem-quote">
+                <div class="form-inline layui-form user-search">
+                    <div class="layui-inline" id="isColletDiv">
+                        <label class="layui-form-label">主播来源</label>
+                        <div class="layui-input-block">
+                            <select name="isCollet" id="isCollet" lay-filter="Level" lay-search>
+                                <option value="-1" selected>全部</option>
+                                <option value="0">非采集</option>
+                                <option value="1">采集</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline" id="isColletCodeDiv">
+                        <label class="layui-form-label">采集公司</label>
+                        <div class="layui-input-block">
+                            <select name="isColletCode" id="isColletCode" lay-filter="Level" lay-search>
+                                <option value="-1" selected>全部</option>
+                                <option value="_LY1">_LY1</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">开始时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="startTimeReload" name="startTime" placeholder="">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">结束时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="endTimeReload" name="endTime" placeholder="">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-block">
+                            <input type="text" name="Name" placeholder="请输入主播账号或昵称" id="Name" autocomplete="off" class="layui-input" maxlength="25">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="search" data-type="reload">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                </div>
+            </blockquote>
+            <table id="table" lay-filter="table"></table>
+        </div>
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+    layui.use(['laydate', 'form', 'table'], function () {
+        var laydate = layui.laydate;
+        var form = layui.form;
+        var table = layui.table;
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#startTimeReload' //指定元素
+            , type: 'datetime'
+            , value: getNowFormatDate("data", 0) + " 00:00:00"
+        });
+        laydate.render({
+            elem: '#endTimeReload' //指定元素
+            , type: 'datetime'
+            , value: getNowFormatDate("data", 1) + " 00:00:00"
+        });
+        var type = @ViewData["type"];
+    //判断是否是管理员 不是就隐藏
+        if (type != 1) {
+            $("#isColletDiv").hide();
+            $("#isColletCodeDiv").hide()
+        } 
+        function renderTable(where) {
+            table.render({
+                elem: '#table'
+                , method: "post"
+                , url: '/System/UserAnchor/GetAnchorReportPage' //数据接口
+                , where: where
+                , page: true //开启分页
+                , totalRow: true
+                , cols: [[ //表头
+                    { field: 'AnchorName', title: '主播账号', totalRowText: "合计：" }
+                    , { field: 'NickName', title: '主播昵称' }
+                    , { field: 'Balance', title: '余额', totalRow: true }
+                    , { field: 'tip_income', title: '打赏收益', totalRow: true }
+                    , { field: 'hour_income', title: '工时收益', totalRow: true }
+                    , { field: 'agent_income', title: '代理收益', totalRow: true }
+                    , { field: 'test_income', title: '代理收益', totalRow: true }
+                    , {
+                        field: 'isCollet', title: '是否采集', templet: function (d) {
+                            if (d.isCollet == "1") {
+                                return '<span class="label label-success label-sm">是</span>'
+                            } else {
+                                return '<span class="label label-dark label-sm">否</span>'
+                            }
+                        }
+                    }
+                ]]
+                , request: {
+                    pageName: 'parm.page' //页码的参数名称，默认：page
+                    , limitName: 'parm.limit' //每页数据量的参数名，默认：limit
+                }
+                , limit: 10
+                , id: "report"
+            });
+        }
+        //监听搜索
+        form.on('submit(search)', function (data) {
+            reloadTable(data.field)
+        });
+        function reloadTable(field) {
+            if (field.endTime != "" && field.startTime == "") {
+                return layer.msg("开始时间不能为空");
+            }
+            if (field.endTime == "" && field.startTime != "") {
+                return layer.msg("结束时间不能为空");
+            }
+            if (field.endTime < field.startTime) {
+                return layer.msg("开始时间不能大于结束时间");
+            }
+            var starttime = new Date(field.startTime);
+            var endtime = new Date(field.endTime);
+            var nowDate = new Date();
+            if (starttime > nowDate) {
+                layer.msg("开始时间不能大于当前时间！");
+                return;
+            }
+            //执行重载
+            table.reload('report', {
+                page: {
+                    curr: 1
+                },
+                where: {
+                    "parm.where": JSON.stringify(field)
+                }
+            });
+        }
+        function getWhere() {
+            var startTime = $("#startTimeReload").val();
+            var endTime = $("#endTimeReload").val();
+            return { "parm.where": JSON.stringify({ startTime: startTime, endTime: endTime }) };
+        }
+        renderTable(getWhere());
+    });
+</script>

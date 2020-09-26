@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using Newtonsoft.Json;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Elight.Entity.Sys
     {
         [SugarColumn(ColumnName = "Id", IsPrimaryKey = true)]
         public string Id { get; set; }
-
+        [JsonConverter(typeof(DateTimeToJson))]
         [SugarColumn(ColumnName = "CreateTime")]
         public DateTime? CreateTime { get; set; }
 

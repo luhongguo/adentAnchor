@@ -35,7 +35,14 @@ namespace Elight.Logic.Sys
                 return db.Deleteable<SysLog>().Where(it => it.CreateTime <= keepDate).ExecuteCommand();
             }
         }
-
+        /// <summary>
+        /// 日志信息
+        /// </summary>
+        /// <param name="level">信息类型 </param>
+        /// <param name="operation">操作</param>
+        /// <param name="message">信息</param>
+        /// <param name="account">操作人</param>
+        /// <param name="realName">真实姓名</param>
         public void Write(Level level, string operation, string message, string account, string realName)
         {
             using (var db = GetInstance())
@@ -57,7 +64,7 @@ namespace Elight.Logic.Sys
                 }
                 catch (Exception ex)
                 {
-
+                    
                 }
             }
         }

@@ -56,9 +56,7 @@ namespace Elight.Logic.Sys
                         Remark = C.Remark,
                         Type = C.Type,
                         SortCode = C.SortCode,
-                        IsPublic = C.IsPublic,
                         IsEnable = C.IsEnable,
-                        IsEdit = C.IsEdit,
                         DeleteMark = C.DeleteMark,
                         CreateUser = C.CreateUser,
                         CreateTime = C.CreateTime,
@@ -137,10 +135,11 @@ namespace Elight.Logic.Sys
             using (var db = GetInstance())
             {
                 model.Id = Guid.NewGuid().ToString().Replace("-", "");
-                model.Layer = Get(model.ParentId).Layer += 1;
+                //最高级菜单id为1
+                model.Layer = model.ParentId == "1" ? 0 : Get(model.ParentId).Layer += 1;
                 model.IsEnable = model.IsEnable == null ? "0" : "1";
-                model.IsEdit = model.IsEdit == null ? "0" : "1";
-                model.IsPublic = model.IsPublic == null ? "0" : "1";
+                model.IsEdit = "1";
+                model.IsPublic ="1";
                 model.DeleteMark = "0";
                 model.CreateUser = OperatorProvider.Instance.Current.Account;
                 model.CreateTime = DateTime.Now;
@@ -154,10 +153,10 @@ namespace Elight.Logic.Sys
         {
             using (var db = GetInstance())
             {
-                model.Layer = Get(model.ParentId).Layer += 1;
+                model.Layer = model.ParentId == "1" ? 0 :  Get(model.ParentId).Layer += 1;
                 model.IsEnable = model.IsEnable == null ? "0" : "1";
-                model.IsEdit = model.IsEdit == null ? "0" : "1";
-                model.IsPublic = model.IsPublic == null ? "0" : "1";
+                //model.IsEdit = model.IsEdit == null ? "0" : "1";
+                //model.IsPublic = model.IsPublic == null ? "0" : "1";
                 model.ModifyUser = OperatorProvider.Instance.Current.Account;
                 model.ModifyTime = DateTime.Now;
                 return db.Updateable<SysPermission>(model).UpdateColumns(it => new
@@ -172,9 +171,7 @@ namespace Elight.Logic.Sys
                     it.Remark,
                     it.Type,
                     it.SortCode,
-                    it.IsPublic,
                     it.IsEnable,
-                    it.IsEdit,
                     it.ModifyUser,
                     it.ModifyTime,
                 }).ExecuteCommand();

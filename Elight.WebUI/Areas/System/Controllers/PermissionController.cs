@@ -71,7 +71,11 @@ namespace Elight.WebUI.Areas.System.Controllers
         {
             return View();
         }
-
+        /// <summary>
+        /// 删除权限 
+        /// </summary>
+        /// <param name="primaryKey"></param>
+        /// <returns></returns>
         [HttpPost, AuthorizeChecked]
         public ActionResult Delete(string primaryKey)
         {
@@ -88,9 +92,9 @@ namespace Elight.WebUI.Areas.System.Controllers
         public ActionResult GetForm(string primaryKey)
         {
             SysPermission entity = permissionLogic.Get(primaryKey);
-            entity.IsEdit = entity.IsEdit == "1" ? "true" : "false";
+            //entity.IsEdit = entity.IsEdit == "1" ? "true" : "false";
             entity.IsEnable = entity.IsEnable == "1" ? "true" : "false";
-            entity.IsPublic = entity.IsPublic == "1" ? "true" : "false";
+            //entity.IsPublic = entity.IsPublic == "1" ? "true" : "false";
             return Content(entity.ToJson());
         }
 
@@ -98,7 +102,7 @@ namespace Elight.WebUI.Areas.System.Controllers
         public ActionResult GetParent()
         {
             var data = permissionLogic.GetList();
-            var treeList = new List<TreeSelect>();
+            var treeList = new List<TreeSelect>() { new TreeSelect { id = "1", text = "最高级菜单", parentId = "0" } };
             foreach (SysPermission item in data)
             {
                 TreeSelect model = new TreeSelect();

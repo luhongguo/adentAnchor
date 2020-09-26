@@ -23,14 +23,12 @@ namespace Elight.Logic.Sys
         {
             using (var db = GetInstance())
             {
-                return db.Queryable<SysUser, SysOrganize>((A, B) => new object[] {
-                    JoinType.Left,B.Id == A.DepartmentId
-                }).Where((A, B) => A.Account == account).Select((A, B) => new SysUser
+                return db.Queryable<SysUser, SysUserRoleRelation, SysRole>((A, B, C) => new object[] { JoinType.Left, A.Id == B.UserId, JoinType.Left, B.RoleId == C.Id }).Where((A, B, C) => A.Account == account).Select((A, B, C) => new SysUser
                 {
                     Id = A.Id,
                     Account = A.Account,
                     RealName = A.RealName,
-                    NickName = A.NickName,
+                    CompanyCode = A.CompanyCode,
                     Avatar = A.Avatar,
                     Gender = A.Gender,
                     Birthday = A.Birthday,
@@ -47,7 +45,7 @@ namespace Elight.Logic.Sys
                     CreateTime = A.CreateTime,
                     ModifyUser = A.ModifyUser,
                     ModifyTime = A.ModifyTime,
-                    DeptName = B.FullName
+                    Type = C.Type
                 }).First();
             }
         }
@@ -66,7 +64,6 @@ namespace Elight.Logic.Sys
                 return db.Updateable<SysUser>(model).UpdateColumns(it => new
                 {
                     it.RealName,
-                    it.NickName,
                     it.Gender,
                     it.Birthday,
                     it.MobilePhone,
@@ -101,13 +98,6 @@ namespace Elight.Logic.Sys
                         db.Ado.RollbackTran();
                         return row;
                     }
-                    //删除原来的角色
-                    //row = db.Deleteable<SysUserRoleRelation>().Where(it => it.UserId == model.Id).ExecuteCommand();
-                    //if (row == 0)
-                    //{
-                    //    db.Ado.RollbackTran();
-                    //    return row;
-                    //}
                     //新增新的角色
                     List<SysUserRoleRelation> list = new List<SysUserRoleRelation>();
                     foreach (string roleId in roleIds)
@@ -133,7 +123,7 @@ namespace Elight.Logic.Sys
                     userLogOnEntity.Id = Guid.NewGuid().ToString().Replace("-", "");
                     userLogOnEntity.UserId = model.Id;
                     userLogOnEntity.SecretKey = userLogOnEntity.Id.DESEncrypt().Substring(0, 8);
-                    userLogOnEntity.Password = password.MD5Encrypt().DESEncrypt(userLogOnEntity.SecretKey).MD5Encrypt();
+                    userLogOnEntity.Password =password.MD5Encrypt().DESEncrypt(userLogOnEntity.SecretKey).MD5Encrypt();
                     userLogOnEntity.LoginCount = 0;
                     userLogOnEntity.IsOnLine = "0";
                     row = db.Insertable<SysUserLogOn>(userLogOnEntity).ExecuteCommand();
@@ -166,31 +156,20 @@ namespace Elight.Logic.Sys
         {
             using (var db = GetInstance())
             {
-                return db.Queryable<SysUser, SysOrganize>((A, B) => new object[] {
-                    JoinType.Left,B.Id == A.DepartmentId
-                }).Where((A, B) => A.Id == primaryKey).Select((A, B) => new SysUser
+                return db.Queryable<SysUser>().Where((A) => A.Id == primaryKey).Select((A) => new SysUser
                 {
                     Id = A.Id,
                     Account = A.Account,
                     RealName = A.RealName,
-                    NickName = A.NickName,
-                    Avatar = A.Avatar,
                     Gender = A.Gender,
                     Birthday = A.Birthday,
-                    MobilePhone = A.MobilePhone,
-                    Email = A.Email,
-                    Signature = A.Signature,
                     Address = A.Address,
-                    CompanyId = A.CompanyId,
+                    Avatar = A.Avatar,
+                    MobilePhone = A.MobilePhone,
                     IsEnabled = A.IsEnabled,
-                    SortCode = A.SortCode,
-                    DepartmentId = A.DepartmentId,
-                    DeleteMark = A.DeleteMark,
-                    CreateUser = A.CreateUser,
-                    CreateTime = A.CreateTime,
-                    ModifyUser = A.ModifyUser,
-                    ModifyTime = A.ModifyTime,
-                    DeptName = B.FullName
+                    CompanyCode = A.CompanyCode,
+                    Email = A.Email,
+                    Signature = A.Signature
                 }).First();
             }
         }
@@ -200,71 +179,24 @@ namespace Elight.Logic.Sys
         /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
-        /// <param name="keyWord"></param>
+        /// <param name="keyWord">查询参数</param>
         /// <param name="totalCount"></param>
         /// <returns></returns>
         public List<SysUser> GetList(int pageIndex, int pageSize, string keyWord, ref int totalCount)
         {
             using (var db = GetInstance())
             {
-                if (keyWord.IsNullOrEmpty())
-                {
-                    totalCount = db.Queryable<SysUser>().Where(it => it.DeleteMark == "0").Count();
-                    return db.Queryable<SysUser, SysOrganize>((A, B) => new object[] {
-                        JoinType.Left,B.Id == A.DepartmentId
-                    }).Where((A, B) => A.DeleteMark == "0").OrderBy((A, B) => A.SortCode).Select((A, B) => new SysUser
-                    {
-                        Id = A.Id,
-                        Account = A.Account,
-                        RealName = A.RealName,
-                        NickName = A.NickName,
-                        Avatar = A.Avatar,
-                        Gender = A.Gender,
-                        Birthday = A.Birthday,
-                        MobilePhone = A.MobilePhone,
-                        Email = A.Email,
-                        Signature = A.Signature,
-                        Address = A.Address,
-                        CompanyId = A.CompanyId,
-                        IsEnabled = A.IsEnabled,
-                        SortCode = A.SortCode,
-                        DepartmentId = A.DepartmentId,
-                        DeleteMark = A.DeleteMark,
-                        CreateUser = A.CreateUser,
-                        CreateTime = A.CreateTime,
-                        ModifyUser = A.ModifyUser,
-                        ModifyTime = A.ModifyTime,
-                        DeptName = B.FullName
-                    }).ToPageList(pageIndex, pageSize);
-                }
-                totalCount = db.Queryable<SysUser>().Where(it => it.DeleteMark == "0" && (it.Account.Contains(keyWord) || it.RealName.Contains(keyWord))).Count();
-                return db.Queryable<SysUser, SysOrganize>((A, B) => new object[] {
-                    JoinType.Left,B.Id == A.DepartmentId
-                }).Where((A, B) => A.DeleteMark == "0" && (A.Account.Contains(keyWord) || A.RealName.Contains(keyWord))).OrderBy((A, B) => A.SortCode).Select((A, B) => new SysUser
-                {
-                    Id = A.Id,
-                    Account = A.Account,
-                    RealName = A.RealName,
-                    NickName = A.NickName,
-                    Avatar = A.Avatar,
-                    Gender = A.Gender,
-                    Birthday = A.Birthday,
-                    MobilePhone = A.MobilePhone,
-                    Email = A.Email,
-                    Signature = A.Signature,
-                    Address = A.Address,
-                    CompanyId = A.CompanyId,
-                    IsEnabled = A.IsEnabled,
-                    SortCode = A.SortCode,
-                    DepartmentId = A.DepartmentId,
-                    DeleteMark = A.DeleteMark,
-                    CreateUser = A.CreateUser,
-                    CreateTime = A.CreateTime,
-                    ModifyUser = A.ModifyUser,
-                    ModifyTime = A.ModifyTime,
-                    DeptName = B.FullName
-                }).ToPageList(pageIndex, pageSize);
-
+                return db.Queryable<SysUser>()
+                         .WhereIF(!keyWord.IsNullOrEmpty(), it => (it.Account.Contains(keyWord) || it.RealName.Contains(keyWord)))
+                         .Where((A) => A.DeleteMark == "0").OrderBy((A) => A.SortCode).Select((A) => new SysUser
+                         {
+                             Id = A.Id,
+                             Account = A.Account,
+                             RealName = A.RealName,
+                             Avatar = A.Avatar,
+                             CompanyCode = A.CompanyCode,
+                             IsEnabled = A.IsEnabled,
+                         }).ToPageList(pageIndex, pageSize, ref totalCount);
             }
         }
 
@@ -328,7 +260,6 @@ namespace Elight.Logic.Sys
 
                 return db.Updateable<SysUser>(model).UpdateColumns(it => new
                 {
-                    it.NickName,
                     it.RealName,
                     it.Birthday,
                     it.Gender,
@@ -346,7 +277,7 @@ namespace Elight.Logic.Sys
             }
         }
 
-        public int UpdateAndSetRole(SysUser model, string[] roleIds)
+        public int UpdateAndSetRole(SysUser model, string password, string[] roleIds)
         {
             using (var db = GetInstance())
             {
@@ -357,17 +288,10 @@ namespace Elight.Logic.Sys
                     model.ModifyTime = DateTime.Now;
                     int row = db.Updateable<SysUser>(model).UpdateColumns(it => new
                     {
-                        it.NickName,
+                        it.Account,
                         it.RealName,
-                        it.Birthday,
-                        it.Gender,
-                        it.Email,
-                        it.DepartmentId,
                         it.RoleId,
                         it.MobilePhone,
-                        it.Address,
-                        it.Signature,
-                        it.SortCode,
                         it.IsEnabled,
                         it.ModifyUser,
                         it.ModifyTime
@@ -376,6 +300,21 @@ namespace Elight.Logic.Sys
                     {
                         db.Ado.RollbackTran();
                         return row;
+                    }
+                    //修改密码
+                    if (!string.IsNullOrEmpty(password))
+                    {
+                        var logOnModel = db.Queryable<SysUserLogOn>().Where(it => it.UserId == model.Id).First();
+                        logOnModel.Password = password.MD5Encrypt().DESEncrypt(logOnModel.SecretKey).MD5Encrypt();
+                        row = db.Updateable<SysUserLogOn>(logOnModel).UpdateColumns(it => new
+                        {
+                            it.Password
+                        }).ExecuteCommand();
+                        if (row == 0)
+                        {
+                            db.Ado.RollbackTran();
+                            return row;
+                        }
                     }
                     //删除原来的角色
                     row = db.Deleteable<SysUserRoleRelation>().Where(it => it.UserId == model.Id).ExecuteCommand();

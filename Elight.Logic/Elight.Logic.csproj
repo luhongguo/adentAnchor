@@ -152,12 +152,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseLogic.cs" />
+    <Compile Include="Sys\SysAnchorLogic.cs" />
     <Compile Include="Sys\SysItemLogic.cs" />
     <Compile Include="Sys\SysItemsDetailLogic.cs" />
     <Compile Include="Sys\SysLogLogic.cs" />
     <Compile Include="Sys\SysOrganizeLogic.cs" />
     <Compile Include="Sys\SysRoleAuthorizeLogic.cs" />
     <Compile Include="Sys\SysRoleLogic.cs" />
+    <Compile Include="Sys\SysUserAnchorLogic.cs" />
     <Compile Include="Sys\SysUserRoleRelationLogic.cs" />
     <Compile Include="Sys\SysPermissionLogic.cs" />
     <Compile Include="Sys\SysUserLogic.cs" />

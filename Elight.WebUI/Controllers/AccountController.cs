@@ -18,6 +18,7 @@ using Elight.Utility.Format;
 using Elight.Utility;
 using System.Data;
 using Elight.Utility.ResponseModels;
+using Microsoft.Office.Interop.Excel;
 
 namespace Elight.WebUI.Controllers
 {
@@ -115,9 +116,10 @@ namespace Elight.WebUI.Controllers
                 operatorModel.RealName = userEntity.RealName;
                 operatorModel.Avatar = userEntity.Avatar;
                 operatorModel.CompanyId = userEntity.CompanyId;
-                operatorModel.DepartmentId = userEntity.DepartmentId;
+                //operatorModel.DepartmentId = userEntity.DepartmentId;
                 operatorModel.LoginTime = DateTime.Now;
                 operatorModel.Token = Guid.NewGuid().ToString().Replace("-", "").DESEncrypt();
+                operatorModel.Type = userEntity.Type;
                 OperatorProvider.Instance.Current = operatorModel;
                 userLogOnLogic.UpdateLogin(userLogOnEntity);
                 //LogHelper.Write(Level.Info, "系统登录", "登录成功", userEntity.Account, userEntity.RealName);
@@ -211,7 +213,6 @@ namespace Elight.WebUI.Controllers
                 operatorModel.RealName = userEntity.RealName;
                 operatorModel.Avatar = userEntity.Avatar;
                 operatorModel.CompanyId = userEntity.CompanyId;
-                operatorModel.DepartmentId = operatorModel.DepartmentId;
                 operatorModel.LoginTime = DateTime.Now;
                 operatorModel.Token = Guid.NewGuid().ToString().Replace("-", "").DESEncrypt();
                 OperatorProvider.Instance.Current = operatorModel;
@@ -227,6 +228,10 @@ namespace Elight.WebUI.Controllers
         [HttpGet, LoginChecked]
         public ActionResult InfoCard()
         {
+            string userId = OperatorProvider.Instance.Current.UserId;
+            var userLogOnEntity = userLogOnLogic.GetByAccount(userId);
+            ViewBag.LastVisitTime = userLogOnEntity.LastVisitTime;
+            ViewBag.LoginCount = userLogOnEntity.LoginCount;
             return View();
         }
 
@@ -253,7 +258,6 @@ namespace Elight.WebUI.Controllers
             string userId = OperatorProvider.Instance.Current.UserId;
             SysUser userEntity = userlogic.Get(userId);
             userEntity.StrBirthday = userEntity.Birthday.Value.ToString("yyyy-MM-dd");
-            var userLogOnEntity = userLogOnLogic.GetByAccount(userId);
             return Content(userEntity.ToJson());
         }
 
@@ -265,18 +269,25 @@ namespace Elight.WebUI.Controllers
         [HttpPost, LoginChecked]
         public ActionResult UploadAvatar()
         {
-            var file = Request.Files[0];
-            if (file == null) { return Error(); }
-            string userId = OperatorProvider.Instance.Current.UserId;
-
-            string virtualPath = Path.Combine("/Uploads/Avatar/", userId + Path.GetExtension(file.FileName));
-            string filePath = Request.MapPath(virtualPath);
-            if (FileUtil.Exists(filePath))
+            try
             {
-                FileUtil.Delete(filePath);
+                var file = Request.Files[0];
+                if (file == null) { return Error(); }
+                string userId = OperatorProvider.Instance.Current.UserId;
+                string virtualPath = Path.Combine("/Uploads/Avatar/", userId + Path.GetExtension(file.FileName));
+                string filePath = Request.MapPath(virtualPath);
+                if (FileUtil.Exists(filePath))
+                {
+                    FileUtil.Delete(filePath);
+                }
+                file.SaveAs(filePath);
+                return Success("上传成功。", virtualPath);
             }
-            file.SaveAs(filePath);
-            return Success("上传成功。", virtualPath);
+            catch (Exception ex)
+            {
+                new LogLogic().Write(Level.Error, "上传头像错误", ex.Message, OperatorProvider.Instance.Current.Account, OperatorProvider.Instance.Current.RealName);
+                return Error("上传失败。请联系管理员！");
+            }
         }
 
         /// <summary>

@@ -8,38 +8,24 @@ using Elight.Logic.Base;
 using SqlSugar;
 using Elight.Utility.Operator;
 using Elight.Utility.Extension;
+using SyntacticSugar;
 
 namespace Elight.Logic.Sys
 {
     public class SysRoleLogic : BaseLogic
     {
         /// <summary>
-        /// 得到角色列表
+        /// 得到角色列表(树形)
         /// </summary>
         /// <returns></returns>
         public List<SysRole> GetList()
         {
             using (var db = GetInstance())
             {
-                return db.Queryable<SysRole, SysOrganize>((A, B) => new object[] {
-                    JoinType.Left,B.Id == A.OrganizeId
-                }).Where((A, B) => A.DeleteMark == "0").Select((A, B) => new SysRole
+                return db.Queryable<SysRole>().Where((A) => A.DeleteMark == "0").Select((A) => new SysRole
                 {
                     Id = A.Id,
-                    OrganizeId = A.OrganizeId,
-                    EnCode = A.EnCode,
-                    Type = A.Type,
                     Name = A.Name,
-                    AllowEdit = A.AllowEdit,
-                    DeleteMark = A.DeleteMark,
-                    IsEnabled = A.IsEnabled,
-                    Remark = A.Remark,
-                    SortCode = A.SortCode,
-                    CreateUser = A.CreateUser,
-                    CreateTime = A.CreateTime,
-                    ModifyUser = A.ModifyUser,
-                    ModifyTime = A.ModifyTime,
-                    DeptName = B.FullName
                 }).ToList();
             }
         }
@@ -56,51 +42,18 @@ namespace Elight.Logic.Sys
         {
             using (var db = GetInstance())
             {
-                if (keyWord.IsNullOrEmpty())
-                {
-                    totalCount = db.Queryable<SysRole>().Where(it => it.DeleteMark == "0").Count();
-                    return db.Queryable<SysRole, SysOrganize>((A, B) => new object[] {
-                        JoinType.Left,B.Id == A.OrganizeId
-                     }).Where((A, B) => A.DeleteMark == "0").OrderBy((A, B) => A.SortCode).Select((A, B) => new SysRole
-                     {
-                         Id = A.Id,
-                         OrganizeId = A.OrganizeId,
-                         EnCode = A.EnCode,
-                         Type = A.Type,
-                         Name = A.Name,
-                         AllowEdit = A.AllowEdit,
-                         DeleteMark = A.DeleteMark,
-                         IsEnabled = A.IsEnabled,
-                         Remark = A.Remark,
-                         SortCode = A.SortCode,
-                         CreateUser = A.CreateUser,
-                         CreateTime = A.CreateTime,
-                         ModifyUser = A.ModifyUser,
-                         ModifyTime = A.ModifyTime,
-                         DeptName = B.FullName
-                     }).ToPageList(pageIndex, pageSize);
-                }
-                totalCount = db.Queryable<SysRole>().Where(it => it.DeleteMark == "0" && (it.Name.Contains(keyWord) || it.EnCode.Contains(keyWord))).Count();
-                return db.Queryable<SysRole, SysOrganize>((A, B) => new object[] {
-                    JoinType.Left,B.Id == A.OrganizeId
-                }).Where((A, B) => A.DeleteMark == "0" && (A.Name.Contains(keyWord) || A.EnCode.Contains(keyWord))).OrderBy((A, B) => A.SortCode).Select((A, B) => new SysRole
-                {
-                    Id = A.Id,
-                    OrganizeId = A.OrganizeId,
-                    EnCode = A.EnCode,
-                    Type = A.Type,
-                    Name = A.Name,
-                    AllowEdit = A.AllowEdit,
-                    DeleteMark = A.DeleteMark,
-                    IsEnabled = A.IsEnabled,
-                    Remark = A.Remark,
-                    SortCode = A.SortCode,
-                    CreateUser = A.CreateUser,
-                    CreateTime = A.CreateTime,
-                    ModifyUser = A.ModifyUser,
-                    ModifyTime = A.ModifyTime,
-                    DeptName = B.FullName
-                }).ToPageList(pageIndex, pageSize);
+                return db.Queryable<SysRole>()
+                             .WhereIF(!keyWord.IsNullOrEmpty(), it => it.Name.Contains(keyWord))
+                             .Where(it => it.DeleteMark == "0")
+                             .OrderBy((A) => A.SortCode).Select((A) => new SysRole
+                             {
+                                 Id = A.Id,
+                                 Name = A.Name,
+                                 IsEnabled = A.IsEnabled,
+                                 Remark = A.Remark,
+                                 SortCode = A.SortCode,
+                                 Type = A.Type
+                             }).ToPageList(pageIndex, pageSize, ref totalCount);
             }
         }
 
@@ -116,6 +69,7 @@ namespace Elight.Logic.Sys
                 model.Id = Guid.NewGuid().ToString().Replace("-", "");
                 model.IsEnabled = model.IsEnabled == null ? "0" : "1";
                 model.AllowEdit = model.AllowEdit == null ? "0" : "1";
+                model.Type = model.Type;
                 model.DeleteMark = "0";
                 model.CreateUser = OperatorProvider.Instance.Current.Account;
                 model.CreateTime = DateTime.Now;
@@ -140,16 +94,13 @@ namespace Elight.Logic.Sys
                 model.ModifyTime = DateTime.Now;
                 return db.Updateable<SysRole>(model).UpdateColumns(it => new
                 {
-                    it.OrganizeId,
-                    it.EnCode,
-                    it.Type,
                     it.Name,
-                    it.AllowEdit,
                     it.IsEnabled,
                     it.Remark,
                     it.SortCode,
                     it.ModifyUser,
-                    it.ModifyTime
+                    it.ModifyTime,
+                    it.Type
                 }).ExecuteCommand();
             }
         }
@@ -164,25 +115,15 @@ namespace Elight.Logic.Sys
             using (var db = GetInstance())
             {
                 //return db.Queryable<SysRole>().InSingle(primaryKey);
-                return db.Queryable<SysRole, SysOrganize>((A, B) => new object[] {
-                    JoinType.Left,B.Id == A.OrganizeId
-                }).Where((A, B) => A.Id == primaryKey).Select((A, B) => new SysRole
+                return db.Queryable<SysRole>().Where((A) => A.Id == primaryKey).Select((A) => new SysRole
                 {
                     Id = A.Id,
-                    OrganizeId = A.OrganizeId,
-                    EnCode = A.EnCode,
-                    Type = A.Type,
                     Name = A.Name,
-                    AllowEdit = A.AllowEdit,
                     DeleteMark = A.DeleteMark,
                     IsEnabled = A.IsEnabled,
                     Remark = A.Remark,
                     SortCode = A.SortCode,
-                    CreateUser = A.CreateUser,
-                    CreateTime = A.CreateTime,
-                    ModifyUser = A.ModifyUser,
-                    ModifyTime = A.ModifyTime,
-                    DeptName = B.FullName
+                    Type = A.Type
                 }).First();
             }
         }

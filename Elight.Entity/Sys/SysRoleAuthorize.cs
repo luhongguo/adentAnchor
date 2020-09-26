@@ -18,7 +18,9 @@ namespace Elight.Entity.Sys
         [SugarColumn(ColumnName = "RoleId")]
         public string RoleId { get; set; }
 
-
+        /// <summary>
+        /// 权限模块ID
+        /// </summary>
         [SugarColumn(ColumnName = "ModuleId")]
         public string ModuleId { get; set; }
 

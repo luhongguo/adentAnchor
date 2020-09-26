@@ -91,6 +91,9 @@
       <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="Microsoft.ReportViewer.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Report.Viewer.11.0.0.0\lib\net\Microsoft.ReportViewer.Common.dll</HintPath>
     </Reference>
@@ -197,7 +200,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Threading.Tasks, Version=4.0.11.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System.Threading.Tasks.Dataflow, Version=4.6.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
@@ -264,6 +267,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\System\Controllers\AnchorController.cs" />
     <Compile Include="Areas\System\Controllers\ItemController.cs" />
     <Compile Include="Areas\System\Controllers\ItemsDetailController.cs" />
     <Compile Include="Areas\System\Controllers\LogController.cs" />
@@ -271,6 +275,7 @@
     <Compile Include="Areas\System\Controllers\PermissionController.cs" />
     <Compile Include="Areas\System\Controllers\RoleAuthorizeController.cs" />
     <Compile Include="Areas\System\Controllers\RoleController.cs" />
+    <Compile Include="Areas\System\Controllers\UserAnchorController.cs" />
     <Compile Include="Areas\System\Controllers\UserController.cs" />
     <Compile Include="Areas\System\Controllers\UserLogOnController.cs" />
     <Compile Include="Areas\System\SystemAreaRegistration.cs" />
@@ -304,10 +309,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\Oracle\db.sql" />
-    <Content Include="App_Data\PostgreSql\db.sql" />
-    <Content Include="App_Data\MySQL\db.sql" />
-    <Content Include="App_Data\SQLServer\db.sql" />
     <Content Include="Content\amazeui2\css\amazeui.min.css" />
     <Content Include="Content\amazeui2\css\animate.min.css" />
     <Content Include="Content\amazeui2\css\wap.css" />
@@ -475,6 +476,10 @@
     <Content Include="Content\amazeui\lib\weui.css" />
     <Content Include="Content\amazeui\lib\weui.min.css" />
     <Content Include="Content\background.png" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\ckplayer\ckplayer.js" />
     <Content Include="Content\ckplayer\ckplayer.min.js" />
     <Content Include="Content\ckplayer\ckplayer.swf" />
@@ -522,6 +527,7 @@
     <Content Include="Content\crypto-js\sha512.js" />
     <Content Include="Content\crypto-js\tripledes.js" />
     <Content Include="Content\crypto-js\x64-core.js" />
+    <Content Include="Content\dataTime\dataTime.js" />
     <Content Include="Content\echarts\echarts.common.js" />
     <Content Include="Content\echarts\echarts.common.min.js" />
     <Content Include="Content\echarts\echarts.js" />
@@ -693,6 +699,7 @@
     <Content Include="Content\select2\js\select2.js" />
     <Content Include="Content\select2\js\select2.min.js" />
     <Content Include="Content\select2\js\zh-CN.js" />
+    <Content Include="Content\Site.css" />
     <Content Include="Content\ueditor\dialogs\anchor\anchor.html" />
     <Content Include="Content\ueditor\dialogs\attachment\attachment.css" />
     <Content Include="Content\ueditor\dialogs\attachment\attachment.html" />
@@ -1941,6 +1948,7 @@
     <Content Include="Content\ztree\js\jquery.ztree.all.js" />
     <Content Include="Content\ztree\js\jquery.ztree.all.min.js" />
     <Content Include="favicon.ico" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.ttf" />
@@ -1952,9 +1960,8 @@
     <Content Include="Configs\AppSetting.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Img\jS8OTijpLqrlLgMLhsSC2Y.jpeg" />
     <Content Include="lib\Oracle.ManagedDataAccess.dll" />
-    <Content Include="App_Data\IPAddressDB\17monipdb.datx" />
-    <Content Include="App_Data\IPAddressDB\17monipdb.dat" />
     <Content Include="Content\amazeui\fonts\fontawesome-webfont.eot" />
     <Content Include="Content\amazeui\fonts\fontawesome-webfont.ttf" />
     <Content Include="Content\amazeui\fonts\fontawesome-webfont.woff" />
@@ -1983,6 +1990,8 @@
     <Content Include="Content\layui\font\iconfont.ttf" />
     <Content Include="Content\layui\font\iconfont.woff" />
     <Content Include="Content\layui\font\iconfont.woff2" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />
@@ -2064,6 +2073,25 @@
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Fakes Include="Fakes\System.Threading.Tasks.fakes" />
+    <Content Include="Areas\System\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\System\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\System\Views\Anchor\Index.cshtml" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Areas\System\Views\Anchor\IndexS.cshtml" />
+    <Content Include="Areas\System\Views\UserAnchor\Distribution.cshtml" />
+    <Content Include="Areas\System\Views\UserAnchor\AddUserAnchor.cshtml" />
+    <Content Include="Areas\System\Views\UserAnchor\AnchorReport.cshtml" />
+    <Content Include="Areas\System\Views\UserAnchor\FlowDetails.cshtml" />
+    <Content Include="Areas\System\Views\UserAnchor\HourDetails.cshtml" />
+    <Content Include="Areas\System\Views\UserAnchor\GetAnchorInfo.cshtml" />
     <None Include="Properties\PublishProfiles\发布.pubxml" />
     <Content Include="Scripts\buttons.js" />
     <Content Include="Scripts\index.js.flow" />
@@ -2072,14 +2100,6 @@
     <Content Include="Scripts\esm\popper-utils.min.js.map" />
     <Content Include="Scripts\esm\popper-utils.js.map" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
-    <Content Include="Scripts\jquery-3.4.1.js" />
-    <Content Include="Scripts\jquery-3.4.1.min.js" />
-    <Content Include="Scripts\jquery-3.4.1.slim.js" />
-    <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
-    <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
-    <Content Include="Scripts\jquery-3.4.1.min.map" />
-    <Content Include="Scripts\knockout-3.5.1.debug.js" />
-    <Content Include="Scripts\knockout-3.5.1.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -2108,16 +2128,12 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
+    <Content Include="Views\Home\Default.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\" />
     <Folder Include="Areas\System\Models\" />
-    <Folder Include="Areas\System\Views\Shared\" />
-    <Folder Include="Models\" />
     <Folder Include="Uploads\Avatar\" />
-    <Folder Include="Uploads\Content\" />
-    <Folder Include="Uploads\File\" />
-    <Folder Include="Uploads\Temp\" />
-    <Folder Include="Uploads\Video\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -2137,7 +2153,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Home\Default.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -2178,7 +2193,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\SQLite\db.sqlite" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -197,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConstUtils.cs" />
+    <Compile Include="DBHelper\QueryableExtension.cs" />
     <Compile Include="Extension\DataCache\HttpRuntimeCache .cs" />
     <Compile Include="Extension\DataCache\RedisCache.cs" />
     <Compile Include="Extension\ExtDateTime.cs" />
@@ -216,6 +217,11 @@
     <Compile Include="Format\JsonHelper.cs" />
     <Compile Include="Log\LogHelper.cs" />
     <Compile Include="Mail\MailUtils.cs" />
+    <Compile Include="Model\ApiEnum.cs" />
+    <Compile Include="Model\ApiResult.cs" />
+    <Compile Include="Model\Page.cs" />
+    <Compile Include="Model\PageParm.cs" />
+    <Compile Include="Model\SelectModel.cs" />
     <Compile Include="Network\HttpMethods.cs" />
     <Compile Include="Network\Net.cs" />
     <Compile Include="Network\SocketHelper.cs" />
