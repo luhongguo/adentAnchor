@@ -60,7 +60,7 @@ namespace Elight.Logic.Sys
             }
             catch (Exception ex)
             {
-                new LogLogic().Write(Level.Error, "获得经纪人主播列表分页", ex.Message, OperatorProvider.Instance.Current.Account, OperatorProvider.Instance.Current.RealName);
+                new LogLogic().Write(Level.Error, "获得经纪人主播列表分页", ex.Message, ex.StackTrace);
             }
             return result;
         }
@@ -109,7 +109,7 @@ namespace Elight.Logic.Sys
             }
             catch (Exception ex)
             {
-                new LogLogic().Write(Level.Error, "经纪人不拥有的主播 数据分页", ex.Message, OperatorProvider.Instance.Current.Account, OperatorProvider.Instance.Current.RealName);
+                new LogLogic().Write(Level.Error, "经纪人不拥有的主播 数据分页", ex.Message, ex.StackTrace);
             }
             return result;
         }
@@ -139,7 +139,7 @@ namespace Elight.Logic.Sys
             }
             catch (Exception ex)
             {
-                new LogLogic().Write(Level.Error, "添加主播给经纪人", ex.Message, OperatorProvider.Instance.Current.Account, OperatorProvider.Instance.Current.RealName);
+                new LogLogic().Write(Level.Error, "添加主播给经纪人", ex.Message, ex.StackTrace);
                 result = false;
             }
             return result;
@@ -165,7 +165,7 @@ namespace Elight.Logic.Sys
             }
             catch (Exception ex)
             {
-                new LogLogic().Write(Level.Error, "添加主播给经纪人", ex.Message, OperatorProvider.Instance.Current.Account, OperatorProvider.Instance.Current.RealName);
+                new LogLogic().Write(Level.Error, "添加主播给经纪人", ex.Message, ex.StackTrace);
                 result = false;
             }
             return result;
@@ -245,7 +245,7 @@ namespace Elight.Logic.Sys
             }
             catch (Exception ex)
             {
-                new LogLogic().Write(Level.Error, "经纪人查看主播信息", ex.Message, OperatorProvider.Instance.Current.Account, OperatorProvider.Instance.Current.RealName);
+                new LogLogic().Write(Level.Error, "经纪人查看主播信息", ex.Message, ex.StackTrace);
             }
             return result;
         }
@@ -407,7 +407,7 @@ where sendtime>='{dic["startTime"].ToString()}' and sendtime<'{dic["endTime"].To
             }
             catch (Exception ex)
             {
-                new LogLogic().Write(Level.Error, "主播财务报表分页信息", ex.Message, OperatorProvider.Instance.Current.Account, OperatorProvider.Instance.Current.RealName);
+                new LogLogic().Write(Level.Error, "主播财务报表分页信息", ex.Message, ex.StackTrace);
             }
             return res;
         }
@@ -441,7 +441,7 @@ where sendtime>='{dic["startTime"].ToString()}' and sendtime<'{dic["endTime"].To
             }
             catch (Exception ex)
             {
-                new LogLogic().Write(Level.Error, "主播打赏礼物 分页信息", ex.Message, OperatorProvider.Instance.Current.Account, OperatorProvider.Instance.Current.RealName);
+                new LogLogic().Write(Level.Error, "主播打赏礼物 分页信息", ex.Message, ex.StackTrace);
             }
             return res;
         }
@@ -547,7 +547,7 @@ where sendtime>='{dic["startTime"].ToString()}' and sendtime<'{dic["endTime"].To
             }
             catch (Exception ex)
             {
-                new LogLogic().Write(Level.Error, "主播工时 分页信息", ex.Message, OperatorProvider.Instance.Current.Account, OperatorProvider.Instance.Current.RealName);
+                new LogLogic().Write(Level.Error, "主播工时 分页信息", ex.Message, ex.StackTrace);
             }
             return result;
         }
@@ -589,7 +589,7 @@ where sendtime>='{dic["startTime"].ToString()}' and sendtime<'{dic["endTime"].To
             }
             catch (Exception ex)
             {
-                new LogLogic().Write(Level.Error, "主播名称下拉框", ex.Message, OperatorProvider.Instance.Current.Account, OperatorProvider.Instance.Current.RealName);
+                new LogLogic().Write(Level.Error, "主播名称下拉框", ex.Message,ex.StackTrace);
             }
             return result;
         }
@@ -631,7 +631,7 @@ where sendtime>='{dic["startTime"].ToString()}' and sendtime<'{dic["endTime"].To
             }
             catch (Exception ex)
             {
-                new LogLogic().Write(Level.Error, "主播名称下拉框", ex.Message, OperatorProvider.Instance.Current.Account, OperatorProvider.Instance.Current.RealName);
+                new LogLogic().Write(Level.Error, "主播名称下拉框", ex.Message, ex.StackTrace);
             }
             return result;
         }

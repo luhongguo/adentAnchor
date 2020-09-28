@@ -105,7 +105,7 @@ namespace Elight.WebUI.Controllers
             if (inputPassword != userLogOnEntity.Password)
             {
                 //LogHelper.Write(Level.Info, "系统登录", "密码错误", userEntity.Account, userEntity.RealName);
-                logLogic.Write(Level.Info, "系统登录", "密码错误", userEntity.Account, userEntity.RealName);
+                logLogic.Write(Level.Info, "系统登录", "密码错误","", userEntity.Account, userEntity.RealName);
                 return Warning("密码错误，请重新输入。");
             }
             else
@@ -123,7 +123,7 @@ namespace Elight.WebUI.Controllers
                 OperatorProvider.Instance.Current = operatorModel;
                 userLogOnLogic.UpdateLogin(userLogOnEntity);
                 //LogHelper.Write(Level.Info, "系统登录", "登录成功", userEntity.Account, userEntity.RealName);
-                logLogic.Write(Level.Info, "系统登录", "登录成功", userEntity.Account, userEntity.RealName);
+                logLogic.Write(Level.Info, "系统登录", "登录成功","", userEntity.Account, userEntity.RealName);
                 return Success();
             }
         }
@@ -285,7 +285,7 @@ namespace Elight.WebUI.Controllers
             }
             catch (Exception ex)
             {
-                new LogLogic().Write(Level.Error, "上传头像错误", ex.Message, OperatorProvider.Instance.Current.Account, OperatorProvider.Instance.Current.RealName);
+                new LogLogic().Write(Level.Error, "上传头像错误", ex.Message, ex.StackTrace);
                 return Error("上传失败。请联系管理员！");
             }
         }

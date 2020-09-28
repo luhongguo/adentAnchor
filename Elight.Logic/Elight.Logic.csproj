@@ -157,6 +157,7 @@
     <Compile Include="Sys\SysItemsDetailLogic.cs" />
     <Compile Include="Sys\SysLogLogic.cs" />
     <Compile Include="Sys\SysOrganizeLogic.cs" />
+    <Compile Include="Sys\SysRebateLogic.cs" />
     <Compile Include="Sys\SysRoleAuthorizeLogic.cs" />
     <Compile Include="Sys\SysRoleLogic.cs" />
     <Compile Include="Sys\SysUserAnchorLogic.cs" />

@@ -43,14 +43,13 @@ namespace Elight.Logic.Sys
         /// <param name="message">信息</param>
         /// <param name="account">操作人</param>
         /// <param name="realName">真实姓名</param>
-        public void Write(Level level, string operation, string message, string account, string realName)
+        public void Write(Level level, string operation, string message ,string stackTrace, string account="", string realName="")
         {
             using (var db = GetInstance())
             {
                 try
                 {
                     SysLog log = new SysLog();
-                    log.Id = Guid.NewGuid().ToString().Replace("-", "");
                     log.CreateTime = DateTime.Now;
                     log.LogLevel = LogHelper.GetEnumDescription(level);
                     log.Operation = operation;
@@ -60,11 +59,12 @@ namespace Elight.Logic.Sys
                     log.IP = Net.Ip;
                     log.IPAddress = Net.GetAddress(Net.Ip);
                     log.Browser = Net.Browser;
+                    log.StackTrace = stackTrace;
                     db.Insertable<SysLog>(log).ExecuteCommand();
                 }
                 catch (Exception ex)
                 {
-                    
+                  
                 }
             }
         }

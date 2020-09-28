@@ -165,6 +165,7 @@
     <Compile Include="Sys\SysLog.cs" />
     <Compile Include="Sys\SysOrganize.cs" />
     <Compile Include="Sys\SysPermission.cs" />
+    <Compile Include="Sys\SysRebateEntity.cs" />
     <Compile Include="Sys\SysRole.cs" />
     <Compile Include="Sys\SysRoleAuthorize.cs" />
     <Compile Include="Sys\SysUser.cs" />

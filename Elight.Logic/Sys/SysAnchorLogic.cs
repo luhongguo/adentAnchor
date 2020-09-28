@@ -64,7 +64,7 @@ namespace Elight.Logic.Sys
             }
             catch (Exception ex)
             {
-                new LogLogic().Write(Level.Error, "获得所有主播列表分页", ex.Message, OperatorProvider.Instance.Current.Account, OperatorProvider.Instance.Current.RealName);
+                new LogLogic().Write(Level.Error, "获得所有主播列表分页", ex.Message,ex.StackTrace);
             }
             return result;
         }
