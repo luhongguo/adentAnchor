@@ -117,7 +117,7 @@ namespace Elight.Logic.Sys
         {
             using (var db = GetInstance())
             {
-                return db.Queryable<SysPermission>().Where(it => it.DeleteMark == "0").OrderBy(it => it.SortCode).ToList();
+                return db.Queryable<SysPermission>().Where(it => it.DeleteMark == "0" && it.ShopID == OperatorProvider.Instance.Current.ShopID).OrderBy(it => it.SortCode).ToList();
             }
         }
 
@@ -139,7 +139,7 @@ namespace Elight.Logic.Sys
                 model.Layer = model.ParentId == "1" ? 0 : Get(model.ParentId).Layer += 1;
                 model.IsEnable = model.IsEnable == null ? "0" : "1";
                 model.IsEdit = "1";
-                model.IsPublic ="1";
+                model.IsPublic = "1";
                 model.DeleteMark = "0";
                 model.CreateUser = OperatorProvider.Instance.Current.Account;
                 model.CreateTime = DateTime.Now;
@@ -153,7 +153,7 @@ namespace Elight.Logic.Sys
         {
             using (var db = GetInstance())
             {
-                model.Layer = model.ParentId == "1" ? 0 :  Get(model.ParentId).Layer += 1;
+                model.Layer = model.ParentId == "1" ? 0 : Get(model.ParentId).Layer += 1;
                 model.IsEnable = model.IsEnable == null ? "0" : "1";
                 //model.IsEdit = model.IsEdit == null ? "0" : "1";
                 //model.IsPublic = model.IsPublic == null ? "0" : "1";

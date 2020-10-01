@@ -63,6 +63,7 @@ namespace Elight.Logic.Base
                 ConnectionString = QPAgentAnchorDB,
                 DbType = DbType.SqlServer,
                 IsAutoCloseConnection = true,
+                InitKeyType = InitKeyType.Attribute,//InitKeyType 是读取主键和自增列信息的方式
                 ConfigureExternalServices = new ConfigureExternalServices()
                 {
                     SqlFuncServices = ExtMethods.GetExpMethods,
@@ -121,6 +122,7 @@ namespace Elight.Logic.Base
                 ConnectionString = strConnectionString,
                 DbType = DbType.SqlServer,
                 IsAutoCloseConnection = true,
+                InitKeyType = InitKeyType.Attribute,//InitKeyType 是读取主键和自增列信息的方式
                 ConfigureExternalServices = new ConfigureExternalServices()
                 {
                     SqlFuncServices = ExtMethods.GetExpMethods,

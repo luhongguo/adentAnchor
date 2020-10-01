@@ -22,7 +22,7 @@ namespace Elight.Logic.Sys
         {
             using (var db = GetInstance())
             {
-                return db.Queryable<SysRole>().Where((A) => A.DeleteMark == "0").Select((A) => new SysRole
+                return db.Queryable<SysRole>().Where((A) => A.DeleteMark == "0" && A.ShopID == OperatorProvider.Instance.Current.ShopID).Select((A) => new SysRole
                 {
                     Id = A.Id,
                     Name = A.Name,
@@ -44,7 +44,7 @@ namespace Elight.Logic.Sys
             {
                 return db.Queryable<SysRole>()
                              .WhereIF(!keyWord.IsNullOrEmpty(), it => it.Name.Contains(keyWord))
-                             .Where(it => it.DeleteMark == "0")
+                             .Where(it => it.DeleteMark == "0" && it.ShopID == OperatorProvider.Instance.Current.ShopID)
                              .OrderBy((A) => A.SortCode).Select((A) => new SysRole
                              {
                                  Id = A.Id,
@@ -52,7 +52,6 @@ namespace Elight.Logic.Sys
                                  IsEnabled = A.IsEnabled,
                                  Remark = A.Remark,
                                  SortCode = A.SortCode,
-                                 Type = A.Type
                              }).ToPageList(pageIndex, pageSize, ref totalCount);
             }
         }
@@ -67,9 +66,10 @@ namespace Elight.Logic.Sys
             using (var db = GetInstance())
             {
                 model.Id = Guid.NewGuid().ToString().Replace("-", "");
+                model.ShopID = OperatorProvider.Instance.Current.ShopID;
                 model.IsEnabled = model.IsEnabled == null ? "0" : "1";
                 model.AllowEdit = model.AllowEdit == null ? "0" : "1";
-                model.Type = model.Type;
+                //model.Type = model.Type;
                 model.DeleteMark = "0";
                 model.CreateUser = OperatorProvider.Instance.Current.Account;
                 model.CreateTime = DateTime.Now;
@@ -89,7 +89,6 @@ namespace Elight.Logic.Sys
             using (var db = GetInstance())
             {
                 model.IsEnabled = model.IsEnabled == null ? "0" : "1";
-                model.AllowEdit = model.AllowEdit == null ? "0" : "1";
                 model.ModifyUser = OperatorProvider.Instance.Current.Account;
                 model.ModifyTime = DateTime.Now;
                 return db.Updateable<SysRole>(model).UpdateColumns(it => new
@@ -100,7 +99,6 @@ namespace Elight.Logic.Sys
                     it.SortCode,
                     it.ModifyUser,
                     it.ModifyTime,
-                    it.Type
                 }).ExecuteCommand();
             }
         }
@@ -136,7 +134,20 @@ namespace Elight.Logic.Sys
         {
             using (var db = GetInstance())
             {
-                return db.Deleteable<SysRole>().In(primaryKeys).ExecuteCommand();
+                try
+                {
+                    db.Ado.BeginTran();
+                    db.Deleteable<SysRole>().In(primaryKeys).ExecuteCommand();
+                    db.Deleteable<SysRoleAuthorize>().In(it => it.RoleId, primaryKeys).ExecuteCommand();//角色权限
+                    db.Deleteable<SysUserRoleRelation>().In(it => it.RoleId, primaryKeys).ExecuteCommand();//用户角色
+                    db.Ado.CommitTran();
+                }
+                catch (Exception)
+                {
+                    db.Ado.RollbackTran();
+                    return 0;
+                }
+                return 1;
             }
         }
     }

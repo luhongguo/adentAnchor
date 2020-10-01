@@ -21,7 +21,7 @@ namespace Elight.WebUI.Areas.System.Controllers
         public RoleAuthorizeController()
         {
             roleAuthorizeLogic = new SysRoleAuthorizeLogic();
-            permissionLogic =new SysPermissionLogic();
+            permissionLogic = new SysPermissionLogic();
         }
 
         [HttpGet]
@@ -29,12 +29,16 @@ namespace Elight.WebUI.Areas.System.Controllers
         {
             return View();
         }
-
+        /// <summary>
+        /// 角色授权页面
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Index(string roleId)
         {
             var listPerIds = roleAuthorizeLogic.GetList(roleId).Select(c => c.ModuleId).ToList();
-            var listAllPers = permissionLogic.GetList();
+            var listAllPers = permissionLogic.GetList();//获取商户权限
             List<ZTreeNode> result = new List<ZTreeNode>();
             foreach (var item in listAllPers)
             {

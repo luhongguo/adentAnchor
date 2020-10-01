@@ -216,13 +216,19 @@ $.fn.bindChangeEvent = function ($event) {
         var modules = top.client.permission;
         var module = {};
         var childModules = [];
+/**
+*获取访问页面的权限ID。
+*/
         for (var i = 0; i < modules.length; i++) {
             if (modules[i].Url != "") {
                 if (url == modules[i].Url) {
                     module = modules[i];
                 }
             }
-        }
+    }
+/**
+*获取访问页面子集权限
+*/
         for (var i = 0; i < modules.length; i++) {
             if (modules[i].Url != "") {
                 if (modules[i].ParentId == module.Id) {

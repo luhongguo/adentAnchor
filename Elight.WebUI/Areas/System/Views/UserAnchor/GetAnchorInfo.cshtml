@@ -29,25 +29,7 @@
         <div class="panel-body">
             <blockquote class="layui-elem-quote">
                 <div class="form-inline layui-form user-search">
-                    <div class="layui-inline" id="isColletDiv">
-                        <label class="layui-form-label">主播来源</label>
-                        <div class="layui-input-block">
-                            <select name="isCollet" id="isCollet" lay-filter="Level" lay-search>
-                                <option value="-1" selected>全部</option>
-                                <option value="0">非采集</option>
-                                <option value="1">采集</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="layui-inline" id="isColletCodeDiv">
-                        <label class="layui-form-label">采集公司</label>
-                        <div class="layui-input-block">
-                            <select name="isColletCode" id="isColletCode" lay-filter="Level" lay-search>
-                                <option value="-1" selected>全部</option>
-                                <option value="_LY1">_LY1</option>
-                            </select>
-                        </div>
-                    </div>
+                  
                     <div class="layui-inline">
                         <label class="layui-form-label">开始时间</label>
                         <div class="layui-input-inline">
@@ -109,12 +91,6 @@
             elem: '#endTimeReload' //指定元素
             , type: 'datetime'
         });
-         var type = @ViewData["type"];
-    //判断是否是管理员 不是就隐藏
-        if (type != 1) {
-            $("#isColletDiv").hide();
-            $("#isColletCodeDiv").hide()
-        }
         //} else {
         //    $.ajax({
         //        url: "/System/UserAnchor/selectCompanyCodeList",

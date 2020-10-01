@@ -59,6 +59,12 @@
     <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>..\packages\Portable.BouncyCastle.1.8.6.7\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
+    <Reference Include="Elight.Entity">
+      <HintPath>..\..\AdminAgentAnchorSolution\Elight.WebUI\bin\Elight.Entity.dll</HintPath>
+    </Reference>
+    <Reference Include="Elight.Utility">
+      <HintPath>..\..\AdminAgentAnchorSolution\Elight.WebUI\bin\Elight.Utility.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -2141,14 +2147,6 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Elight.Utility\Elight.Utility.csproj">
-      <Project>{8bc219d9-cf88-4397-8c71-b696519118df}</Project>
-      <Name>Elight.Utility</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Elight.Entity\Elight.Entity.csproj">
-      <Project>{3a2cba03-f83e-4505-bf6d-3ce73164252a}</Project>
-      <Name>Elight.Entity</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Elight.Logic\Elight.Logic.csproj">
       <Project>{f8fc19a3-9d24-4231-8af3-546e445280a4}</Project>
       <Name>Elight.Logic</Name>
@@ -2264,7 +2262,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>48140</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:48141/</IISUrl>
+          <IISUrl>http://localhost:48142/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

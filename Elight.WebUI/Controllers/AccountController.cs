@@ -105,7 +105,7 @@ namespace Elight.WebUI.Controllers
             if (inputPassword != userLogOnEntity.Password)
             {
                 //LogHelper.Write(Level.Info, "系统登录", "密码错误", userEntity.Account, userEntity.RealName);
-                logLogic.Write(Level.Info, "系统登录", "密码错误","", userEntity.Account, userEntity.RealName);
+                logLogic.Write(Level.Info, "系统登录", "密码错误", "", userEntity.Account, userEntity.RealName);
                 return Warning("密码错误，请重新输入。");
             }
             else
@@ -119,11 +119,11 @@ namespace Elight.WebUI.Controllers
                 //operatorModel.DepartmentId = userEntity.DepartmentId;
                 operatorModel.LoginTime = DateTime.Now;
                 operatorModel.Token = Guid.NewGuid().ToString().Replace("-", "").DESEncrypt();
-                operatorModel.Type = userEntity.Type;
+                operatorModel.ShopID = userEntity.ShopID;
                 OperatorProvider.Instance.Current = operatorModel;
                 userLogOnLogic.UpdateLogin(userLogOnEntity);
                 //LogHelper.Write(Level.Info, "系统登录", "登录成功", userEntity.Account, userEntity.RealName);
-                logLogic.Write(Level.Info, "系统登录", "登录成功","", userEntity.Account, userEntity.RealName);
+                logLogic.Write(Level.Info, "系统登录", "登录成功", "", userEntity.Account, userEntity.RealName);
                 return Success();
             }
         }

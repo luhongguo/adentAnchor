@@ -18,6 +18,7 @@ using Elight.Entity.Model;
 
 namespace Elight.WebUI.Areas.System.Controllers
 {
+    [LoginChecked]
     public class UserAnchorController : BaseController
     {
         private SysUserAnchorLogic sysUserAnchorLogic;
@@ -50,7 +51,6 @@ namespace Elight.WebUI.Areas.System.Controllers
         [HttpGet, AuthorizeChecked]
         public ActionResult GetAnchorInfo()
         {
-            ViewData["type"] = OperatorProvider.Instance.Current.Type;
             return View();
         }
 
@@ -115,7 +115,7 @@ namespace Elight.WebUI.Areas.System.Controllers
             return Error();
         }
         /// <summary>
-        /// 添加经纪人的主播
+        /// 删除经纪人的主播
         /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
@@ -161,7 +161,6 @@ namespace Elight.WebUI.Areas.System.Controllers
         [HttpGet, AuthorizeChecked]
         public ActionResult AnchorReport()
         {
-            ViewData["type"] = OperatorProvider.Instance.Current.Type;
             return View();
         }
         /// <summary>
@@ -201,7 +200,6 @@ namespace Elight.WebUI.Areas.System.Controllers
         [HttpGet, AuthorizeChecked]
         public ActionResult FlowDetails()
         {
-            ViewData["type"] = OperatorProvider.Instance.Current.Type;
             return View();
         }
         /// <summary>

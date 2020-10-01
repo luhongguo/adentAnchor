@@ -23,9 +23,10 @@ namespace Elight.Logic.Sys
         {
             using (var db = GetInstance())
             {
-                return db.Queryable<SysUser, SysUserRoleRelation, SysRole>((A, B, C) => new object[] { JoinType.Left, A.Id == B.UserId, JoinType.Left, B.RoleId == C.Id }).Where((A, B, C) => A.Account == account).Select((A, B, C) => new SysUser
+                return db.Queryable<SysUser>().Where((A) => A.Account == account && A.ShopID != 0).Select((A) => new SysUser
                 {
                     Id = A.Id,
+                    ShopID=A.ShopID,
                     Account = A.Account,
                     RealName = A.RealName,
                     CompanyCode = A.CompanyCode,
@@ -45,7 +46,6 @@ namespace Elight.Logic.Sys
                     CreateTime = A.CreateTime,
                     ModifyUser = A.ModifyUser,
                     ModifyTime = A.ModifyTime,
-                    Type = C.Type
                 }).First();
             }
         }
@@ -86,6 +86,7 @@ namespace Elight.Logic.Sys
                     db.Ado.BeginTran();
                     ////新增用户基本信息。
                     model.Id = Guid.NewGuid().ToString().Replace("-", "");
+                    model.ShopID = OperatorProvider.Instance.Current.ShopID;
                     model.DeleteMark = "0";
                     model.CreateUser = OperatorProvider.Instance.Current.Account;
                     model.CreateTime = DateTime.Now;
@@ -123,7 +124,7 @@ namespace Elight.Logic.Sys
                     userLogOnEntity.Id = Guid.NewGuid().ToString().Replace("-", "");
                     userLogOnEntity.UserId = model.Id;
                     userLogOnEntity.SecretKey = userLogOnEntity.Id.DESEncrypt().Substring(0, 8);
-                    userLogOnEntity.Password =password.MD5Encrypt().DESEncrypt(userLogOnEntity.SecretKey).MD5Encrypt();
+                    userLogOnEntity.Password = password.MD5Encrypt().DESEncrypt(userLogOnEntity.SecretKey).MD5Encrypt();
                     userLogOnEntity.LoginCount = 0;
                     userLogOnEntity.IsOnLine = "0";
                     row = db.Insertable<SysUserLogOn>(userLogOnEntity).ExecuteCommand();
@@ -188,13 +189,12 @@ namespace Elight.Logic.Sys
             {
                 return db.Queryable<SysUser>()
                          .WhereIF(!keyWord.IsNullOrEmpty(), it => (it.Account.Contains(keyWord) || it.RealName.Contains(keyWord)))
-                         .Where((A) => A.DeleteMark == "0").OrderBy((A) => A.SortCode).Select((A) => new SysUser
+                         .Where((A) => A.DeleteMark == "0" && A.ShopID==OperatorProvider.Instance.Current.ShopID).OrderBy((A) => A.SortCode).Select((A) => new SysUser
                          {
                              Id = A.Id,
                              Account = A.Account,
                              RealName = A.RealName,
                              Avatar = A.Avatar,
-                             CompanyCode = A.CompanyCode,
                              IsEnabled = A.IsEnabled,
                          }).ToPageList(pageIndex, pageSize, ref totalCount);
             }
