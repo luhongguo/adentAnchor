@@ -169,7 +169,7 @@ namespace Elight.Logic.Sys
         }
 
         /// <summary>
-        /// 经纪人查看自己的主播信息
+        /// 主播信息分页
         /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
@@ -190,8 +190,8 @@ namespace Elight.Logic.Sys
                 //statu 	正常unlock 禁用 lock 审核中 audit
                 using (var db = GetInstance())
                 {
-                    result = db.Queryable<SysUserAnchor, SysAnchor>((st, it) => new object[] { JoinType.Left, st.AnchorID == it.id })
-                                .Where((st, it) => st.UserID == OperatorProvider.Instance.Current.UserId)
+                    result = db.Queryable<SysShopAnchorEntity, SysAnchor>((st, it) => new object[] { JoinType.Left, st.AnchorID == it.id })
+                                .Where((st, it) => st.ShopID == OperatorProvider.Instance.Current.ShopID)
                                 .WhereIF(dic.ContainsKey("Name") && !string.IsNullOrEmpty(dic["Name"].ToString()), (st, it) => it.username.Contains(dic["Name"].ToString()) || it.nickname.Contains(dic["Name"].ToString()))
                                 .WhereIF(dic.ContainsKey("startTime") && !string.IsNullOrEmpty(dic["startTime"].ToString()) && !string.IsNullOrEmpty(dic["endTime"].ToString()), (st, it) => it.regtime >= Convert.ToDateTime(dic["startTime"]) && it.regtime <= Convert.ToDateTime(dic["endTime"]))
                                 .Select((st, it) => new SysAnchor
@@ -239,10 +239,10 @@ namespace Elight.Logic.Sys
                 }
                 using (var db = GetSqlSugarDB(DbConnType.QPAnchorRecordDB))
                 {
-                    var query = db.Queryable<SysUserAnchor, SysAnchor, SysIncomeEntity>((at, st, it) => new object[] {
+                    var query = db.Queryable<SysShopAnchorEntity, SysAnchor, SysIncomeEntity>((at, st, it) => new object[] {
                         JoinType.Left,at.AnchorID==st.id,
                         JoinType.Left, st.id == it.AnchorID })
-                        .Where((at, st, it) => at.UserID == OperatorProvider.Instance.Current.UserId)
+                        .Where((at, st, it) => at.ShopID == OperatorProvider.Instance.Current.ShopID)
                         .Where((at, st, it) => it.opdate >= Convert.ToDateTime(dic["startTime"]) && it.opdate < Convert.ToDateTime(dic["endTime"]))
                         .WhereIF(dic.ContainsKey("Name") && !string.IsNullOrEmpty(dic["Name"].ToString()), (at, st, it) => st.username.Contains(dic["Name"].ToString()) || st.nickname.Contains(dic["Name"].ToString()))
                         .WithCache(60);
@@ -276,7 +276,7 @@ namespace Elight.Logic.Sys
                 new LogLogic().Write(Level.Error, "主播财务报表分页信息", ex.Message, ex.StackTrace);
             }
             return res;
-            #region
+            #region  老版本
             //            var res = new List<IncomeTemplateModel>();
             //            try
             //            {
@@ -375,9 +375,9 @@ namespace Elight.Logic.Sys
         /// </summary>
         /// <param name="parm"></param>
         /// <returns></returns>
-        public List<TipTemplateModel> GetFlowDetailsPage(PageParm parm, ref int totalCount, ref decimal sumTotalAmount)
+        public List<TipEntity> GetFlowDetailsPage(PageParm parm, ref int totalCount, ref decimal sumTotalAmount)
         {
-            var res = new List<TipTemplateModel>();
+            var res = new List<TipEntity>();
             try
             {
                 if (parm == null)
@@ -388,14 +388,33 @@ namespace Elight.Logic.Sys
                 if (!string.IsNullOrEmpty(parm.where))
                 {
                     dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(parm.where);
-
                 }
                 using (var db = GetSqlSugarDB(DbConnType.QPAnchorRecordDB))
                 {
-                    var query = db.SqlQueryable<TipTemplateModel>($@"select orderno,giftname,price,quantity,ratio, totalamount,username,sendtime  from tip_" + dic["userName"].ToString()
-                               + $@" where sendtime>='{dic["startTime"].ToString()}' and sendtime<'{dic["endTime"].ToString()}'");
-                    sumTotalAmount = query.Clone().Sum(it => it.totalamount);
-                    res = query.ToPageList(parm.page, parm.limit, ref totalCount);
+                    var query = db.Queryable<SysShopAnchorEntity, SysAnchor, TipEntity>((at, st, it) => new object[] {
+                        JoinType.Left,at.AnchorID==st.id,
+                        JoinType.Left, at.AnchorID == it.AnchorID })
+                          .Where((at, st, it) => at.ShopID == OperatorProvider.Instance.Current.ShopID)
+                          .Where((at, st, it) => it.sendtime >= Convert.ToDateTime(dic["startTime"]) && it.sendtime < Convert.ToDateTime(dic["endTime"]))
+                          .WhereIF(dic.ContainsKey("userName") && !string.IsNullOrEmpty(dic["userName"].ToString()), (at, st, it) => st.username.Contains(dic["userName"].ToString()) || st.nickname.Contains(dic["userName"].ToString()))
+                          .WithCache(60);
+                    sumTotalAmount = query.Clone().Sum((at, st, it) => it.totalamount);
+                    res = query
+                          .Select((at, st, it) => new TipEntity
+                          {
+                              orderno = it.orderno,
+                              giftname = it.giftname,
+                              price = it.price,
+                              quantity = it.quantity,
+                              ratio = it.ratio,
+                              totalamount = it.totalamount,
+                              username = it.username,
+                              sendtime = it.sendtime,
+                              AnchorName = st.username,
+                              AnchorNickName = st.nickname
+                          })
+                         .OrderBy(" it.sendtime desc")
+                         .ToPageList(parm.page, parm.limit, ref totalCount);
                 }
             }
             catch (Exception ex)
@@ -403,6 +422,34 @@ namespace Elight.Logic.Sys
                 new LogLogic().Write(Level.Error, "主播打赏礼物 分页信息", ex.Message, ex.StackTrace);
             }
             return res;
+            #region 老版本
+            //var res = new List<TipTemplateModel>();
+            //try
+            //{
+            //    if (parm == null)
+            //    {
+            //        parm = new PageParm();
+            //    }
+            //    Dictionary<string, object> dic = new Dictionary<string, object>();
+            //    if (!string.IsNullOrEmpty(parm.where))
+            //    {
+            //        dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(parm.where);
+
+            //    }
+            //    using (var db = GetSqlSugarDB(DbConnType.QPAnchorRecordDB))
+            //    {
+            //        var query = db.SqlQueryable<TipTemplateModel>($@"select orderno,giftname,price,quantity,ratio, totalamount,username,sendtime  from tip_" + dic["userName"].ToString()
+            //                   + $@" where sendtime>='{dic["startTime"].ToString()}' and sendtime<'{dic["endTime"].ToString()}'");
+            //        sumTotalAmount = query.Clone().Sum(it => it.totalamount);
+            //        res = query.ToPageList(parm.page, parm.limit, ref totalCount);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    new LogLogic().Write(Level.Error, "主播打赏礼物 分页信息", ex.Message, ex.StackTrace);
+            //}
+            //return res;
+            #endregion
         }
         /// <summary>
         /// 主播工时 分页信息

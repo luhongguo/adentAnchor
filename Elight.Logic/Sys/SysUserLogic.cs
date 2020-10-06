@@ -51,6 +51,24 @@ namespace Elight.Logic.Sys
         }
 
         /// <summary>
+        /// 验证该商户下 用户是否存在
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public SysUser CheckUserName(string account)
+        {
+            using (var db = GetInstance())
+            {
+                return db.Queryable<SysUser>().Where((A) => A.Account == account && A.ShopID==OperatorProvider.Instance.Current.ShopID).Select(A => new SysUser
+                {
+                    Id = A.Id,
+                    ShopID = A.ShopID,
+                    Account = A.Account,
+                }).First();
+            }
+        }
+
+        /// <summary>
         /// 修改用户基础信息
         /// </summary>
         /// <param name="model"></param>

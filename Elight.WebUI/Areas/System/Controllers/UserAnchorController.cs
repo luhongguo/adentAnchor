@@ -133,7 +133,7 @@ namespace Elight.WebUI.Areas.System.Controllers
             return Error();
         }
         /// <summary>
-        /// 经纪人名下主播信息
+        /// 主播信息分页信息
         /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
