@@ -187,13 +187,14 @@ namespace Elight.Logic.Sys
         {
             using (var db = GetInstance())
             {
-                return db.Queryable<SysUser>()
+                return db.Queryable<SysUser,SysUserRoleRelation,SysRole>((A,B,C)=>new object[] {JoinType.Left,A.Id==B.UserId,JoinType.Left,B.RoleId==C.Id })
                          .WhereIF(!keyWord.IsNullOrEmpty(), it => (it.Account.Contains(keyWord) || it.RealName.Contains(keyWord)))
-                         .Where((A) => A.DeleteMark == "0" && A.ShopID==OperatorProvider.Instance.Current.ShopID).OrderBy((A) => A.SortCode).Select((A) => new SysUser
+                         .Where((A) => A.DeleteMark == "0" && A.ShopID==OperatorProvider.Instance.Current.ShopID).OrderBy((A) => A.SortCode).Select((A,B,C) => new SysUser
                          {
                              Id = A.Id,
                              Account = A.Account,
                              RealName = A.RealName,
+                             ShopName=C.Name,//接收角色名称
                              Avatar = A.Avatar,
                              IsEnabled = A.IsEnabled,
                          }).ToPageList(pageIndex, pageSize, ref totalCount);
