@@ -27,6 +27,36 @@ namespace Elight.WebUI.Areas.System.Controllers
             sysUserAnchorLogic = new SysUserAnchorLogic();
         }
         /// <summary>
+        /// 经纪人查看主播信息展示页面
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet, AuthorizeChecked]
+        public ActionResult GetAnchorInfo()
+        {
+            return View();
+        }
+        /// <summary>
+        /// 主播信息分页信息
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="keyWord">查询条件</param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult UserSelectAnchorList(PageParm parm)
+        {
+            int totalCount = 0;
+            var pageData = sysUserAnchorLogic.UserSelectAnchorList(parm, ref totalCount);
+            var result = new
+            {
+                code = 0,
+                msg = "success",
+                data = pageData,
+                count = totalCount// pageData.Count
+            };
+            return Content(result.ToJson());
+        }
+        /// <summary>
         /// 经纪人主播页面
         /// </summary>
         /// <returns></returns>
@@ -44,16 +74,6 @@ namespace Elight.WebUI.Areas.System.Controllers
         {
             return View();
         }
-        /// <summary>
-        /// 经纪人查看主播信息展示页面
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet, AuthorizeChecked]
-        public ActionResult GetAnchorInfo()
-        {
-            return View();
-        }
-
         /// <summary>
         /// 经纪人名下主播
         /// </summary>
@@ -132,27 +152,7 @@ namespace Elight.WebUI.Areas.System.Controllers
             }
             return Error();
         }
-        /// <summary>
-        /// 主播信息分页信息
-        /// </summary>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="keyWord">查询条件</param>
-        /// <returns></returns>
-        [HttpPost]
-        public ActionResult UserSelectAnchorList(PageParm parm)
-        {
-            int totalCount = 0;
-            var pageData = sysUserAnchorLogic.UserSelectAnchorList(parm, ref totalCount);
-            var result = new
-            {
-                code = 0,
-                msg = "success",
-                data = pageData,
-                count = totalCount// pageData.Count
-            };
-            return Content(result.ToJson());
-        }
+       
         #region  金额流水
         /// <summary>
         /// 主播财务报表
@@ -187,7 +187,7 @@ namespace Elight.WebUI.Areas.System.Controllers
                     hour_income = sumModel.hour_income.ToString(),
                     agent_income = sumModel.agent_income.ToString(),
                     tip_income = sumModel.tip_income.ToString(),
-                    test_income = sumModel.test_income.ToString(),
+                    Platform_income = sumModel.Platform_income.ToString(),
                     Balance = sumModel.Balance.ToString()
                 }
             };
@@ -249,7 +249,7 @@ namespace Elight.WebUI.Areas.System.Controllers
         {
             int totalCount = 0;
             decimal sumAmount = 0;
-            int sumDuration = 0;
+            decimal sumDuration = 0;
             var res = sysUserAnchorLogic.GetHourDetailsPage(parm, ref totalCount, ref sumAmount, ref sumDuration);
             var result = new
             {

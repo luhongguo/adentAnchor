@@ -16,6 +16,52 @@ namespace Elight.Logic.Sys
     public class SysUserAnchorLogic : BaseLogic
     {
         /// <summary>
+        /// 主播信息分页
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="keyWord"></param>
+        /// <param name="totalCount"></param>
+        /// <returns></returns>
+        public List<SysAnchor> UserSelectAnchorList(PageParm parm, ref int totalCount)
+        {
+            Dictionary<string, object> dic = new Dictionary<string, object>();
+            if (!string.IsNullOrEmpty(parm.where))
+            {
+                dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(parm.where);
+            }
+            var result = new List<SysAnchor>();
+            try
+            {
+                //lmstatus  连麦状态 live 直播 offline 离线  normal正常 kickline踢线  disabled禁用
+                //statu 	正常unlock 禁用 lock 审核中 audit
+                using (var db = GetInstance())
+                {
+                    result = db.Queryable<SysShopAnchorEntity, SysAnchor, SysAnchorInfoEntity>((st, it, at) => new object[] { JoinType.Left, st.AnchorID == it.id, JoinType.Left, it.id == at.aid })
+                                .Where((st, it) => st.ShopID == OperatorProvider.Instance.Current.ShopID)
+                                .WhereIF(dic.ContainsKey("Name") && !string.IsNullOrEmpty(dic["Name"].ToString()), (st, it, at) => it.anchorName.Contains(dic["Name"].ToString()) || it.nickName.Contains(dic["Name"].ToString()))
+                                .WhereIF(dic.ContainsKey("startTime") && !string.IsNullOrEmpty(dic["startTime"].ToString()) && !string.IsNullOrEmpty(dic["endTime"].ToString()), (st, it, at) => it.createTime >= Convert.ToDateTime(dic["startTime"]) && it.createTime < Convert.ToDateTime(dic["endTime"]))
+                                .Select((st, it, at) => new SysAnchor
+                                {
+                                    id = it.id,
+                                    anchorName = it.anchorName,
+                                    nickName = it.nickName,
+                                    headUrl = SqlFunc.IIF(it.headUrl.Contains("http"), it.headUrl, Image_CDN + it.headUrl),
+                                    balance = at.gold,
+                                    follow = at.follow,
+                                    birthday = it.birthday,
+                                    status = at.status,
+                                    createTime = it.createTime
+                                }).ToPageList(parm.page, parm.limit, ref totalCount);
+                }
+            }
+            catch (Exception ex)
+            {
+                new LogLogic().Write(Level.Error, "经纪人查看主播信息", ex.Message, ex.StackTrace);
+            }
+            return result;
+        }
+        /// <summary>
         /// 超管获得经纪人拥有的主播 列表分页
         /// </summary>
         /// <param name="pageIndex"></param>
@@ -37,23 +83,23 @@ namespace Elight.Logic.Sys
                 //statu 	正常unlock 禁用 lock 审核中 audit
                 using (var db = GetInstance())
                 {
-                    result = db.Queryable<SysUserAnchor, SysAnchor>((st, it) => new object[] { JoinType.Left, st.AnchorID == it.id })
-                                 .WhereIF(dic.ContainsKey("anchorUserName") && !string.IsNullOrEmpty(dic["anchorUserName"].ToString()), (st, it) => it.username.Contains(dic["anchorUserName"].ToString()) || it.nickname.Contains(dic["anchorUserName"].ToString()))
-                                 .WhereIF(dic.ContainsKey("userID") && !string.IsNullOrEmpty(dic["userID"].ToString()), (st, it) => st.UserID == dic["userID"].ToString())
-                                 .Select((st, it) => new SysAnchor
-                                 {
-                                     id = it.id,
-                                     username = it.username,
-                                     nickname = it.nickname,
-                                     photo = it.photo,
-                                     balance = it.balance,
-                                     atteCount = it.atteCount,
-                                     ishot = it.ishot,
-                                     isrecommend = it.isrecommend,
-                                     regtime = it.regtime,
-                                     viplevel = it.viplevel,
-                                     birthday = it.birthday,
-                                 }).ToPageList(pageIndex, pageSize, ref totalCount);
+                    //result = db.Queryable<SysUserAnchor, SysAnchor>((st, it) => new object[] { JoinType.Left, st.AnchorID == it.id })
+                    //             .WhereIF(dic.ContainsKey("anchorUserName") && !string.IsNullOrEmpty(dic["anchorUserName"].ToString()), (st, it) => it.username.Contains(dic["anchorUserName"].ToString()) || it.nickname.Contains(dic["anchorUserName"].ToString()))
+                    //             .WhereIF(dic.ContainsKey("userID") && !string.IsNullOrEmpty(dic["userID"].ToString()), (st, it) => st.UserID == dic["userID"].ToString())
+                    //             .Select((st, it) => new SysAnchor
+                    //             {
+                    //                 id = it.id,
+                    //                 username = it.username,
+                    //                 nickname = it.nickname,
+                    //                 photo = it.photo,
+                    //                 balance = it.balance,
+                    //                 atteCount = it.atteCount,
+                    //                 ishot = it.ishot,
+                    //                 isrecommend = it.isrecommend,
+                    //                 regtime = it.regtime,
+                    //                 viplevel = it.viplevel,
+                    //                 birthday = it.birthday,
+                    //             }).ToPageList(pageIndex, pageSize, ref totalCount);
                 }
             }
             catch (Exception ex)
@@ -84,24 +130,24 @@ namespace Elight.Logic.Sys
                 //statu 	正常unlock 禁用 lock 审核中 audit
                 using (var db = GetSqlSugarDB(DbConnType.QPVideoAnchorDB))
                 {
-                    result = db.Queryable<SysShopAnchorEntity, SysAnchor>((st, it) => new object[] { JoinType.Left, st.AnchorID == it.id })
-                                 .Where((st, it) => st.ShopID == OperatorProvider.Instance.Current.ShopID)
-                                 .Where((st, it) => SqlFunc.Subqueryable<SysUserAnchor>().Where(gt => gt.UserID == dic["userID"].ToString()).Where(gt => gt.AnchorID == st.AnchorID).NotAny())
-                                 .WhereIF(dic.ContainsKey("anchorUserName") && !string.IsNullOrEmpty(dic["anchorUserName"].ToString()), (st, it) => it.username.Contains(dic["anchorUserName"].ToString()) || it.nickname.Contains(dic["anchorUserName"].ToString()))
-                                 .Select((st, it) => new SysAnchor
-                                 {
-                                     id = it.id,
-                                     username = it.username,
-                                     nickname = it.nickname,
-                                     photo = it.photo,
-                                     balance = it.balance,
-                                     atteCount = it.atteCount,
-                                     ishot = it.ishot,
-                                     isrecommend = it.isrecommend,
-                                     regtime = it.regtime,
-                                     viplevel = it.viplevel,
-                                     birthday = it.birthday,
-                                 }).ToPageList(pageIndex, pageSize, ref totalCount);
+                    //result = db.Queryable<SysShopAnchorEntity, SysAnchor>((st, it) => new object[] { JoinType.Left, st.AnchorID == it.id })
+                    //             .Where((st, it) => st.ShopID == OperatorProvider.Instance.Current.ShopID)
+                    //             .Where((st, it) => SqlFunc.Subqueryable<SysUserAnchor>().Where(gt => gt.UserID == dic["userID"].ToString()).Where(gt => gt.AnchorID == st.AnchorID).NotAny())
+                    //             .WhereIF(dic.ContainsKey("anchorUserName") && !string.IsNullOrEmpty(dic["anchorUserName"].ToString()), (st, it) => it.username.Contains(dic["anchorUserName"].ToString()) || it.nickname.Contains(dic["anchorUserName"].ToString()))
+                    //             .Select((st, it) => new SysAnchor
+                    //             {
+                    //                 id = it.id,
+                    //                 username = it.username,
+                    //                 nickname = it.nickname,
+                    //                 photo = it.photo,
+                    //                 balance = it.balance,
+                    //                 atteCount = it.atteCount,
+                    //                 ishot = it.ishot,
+                    //                 isrecommend = it.isrecommend,
+                    //                 regtime = it.regtime,
+                    //                 viplevel = it.viplevel,
+                    //                 birthday = it.birthday,
+                    //             }).ToPageList(pageIndex, pageSize, ref totalCount);
                 }
             }
             catch (Exception ex)
@@ -168,56 +214,7 @@ namespace Elight.Logic.Sys
             return result;
         }
 
-        /// <summary>
-        /// 主播信息分页
-        /// </summary>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="keyWord"></param>
-        /// <param name="totalCount"></param>
-        /// <returns></returns>
-        public List<SysAnchor> UserSelectAnchorList(PageParm parm, ref int totalCount)
-        {
-            Dictionary<string, object> dic = new Dictionary<string, object>();
-            if (!string.IsNullOrEmpty(parm.where))
-            {
-                dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(parm.where);
-            }
-            var result = new List<SysAnchor>();
-            try
-            {
-                //lmstatus  连麦状态 live 直播 offline 离线  normal正常 kickline踢线  disabled禁用
-                //statu 	正常unlock 禁用 lock 审核中 audit
-                using (var db = GetInstance())
-                {
-                    result = db.Queryable<SysShopAnchorEntity, SysAnchor>((st, it) => new object[] { JoinType.Left, st.AnchorID == it.id })
-                                .Where((st, it) => st.ShopID == OperatorProvider.Instance.Current.ShopID)
-                                .WhereIF(dic.ContainsKey("Name") && !string.IsNullOrEmpty(dic["Name"].ToString()), (st, it) => it.username.Contains(dic["Name"].ToString()) || it.nickname.Contains(dic["Name"].ToString()))
-                                .WhereIF(dic.ContainsKey("startTime") && !string.IsNullOrEmpty(dic["startTime"].ToString()) && !string.IsNullOrEmpty(dic["endTime"].ToString()), (st, it) => it.regtime >= Convert.ToDateTime(dic["startTime"]) && it.regtime <= Convert.ToDateTime(dic["endTime"]))
-                                .Select((st, it) => new SysAnchor
-                                {
-                                    id = it.id,
-                                    username = it.username,
-                                    nickname = it.nickname,
-                                    photo = it.photo,
-                                    balance = it.balance,
-                                    atteCount = it.atteCount,
-                                    ishot = it.ishot,
-                                    isrecommend = it.isrecommend,
-                                    regtime = it.regtime,
-                                    viplevel = it.viplevel,
-                                    birthday = it.birthday,
-                                    lmstatus = it.lmstatus,
-                                    isCollet = it.isCollet
-                                }).ToPageList(parm.page, parm.limit, ref totalCount);
-                }
-            }
-            catch (Exception ex)
-            {
-                new LogLogic().Write(Level.Error, "经纪人查看主播信息", ex.Message, ex.StackTrace);
-            }
-            return result;
-        }
+       
         /// <summary>
         /// 主播财务报表分页信息
         /// </summary>
@@ -239,33 +236,33 @@ namespace Elight.Logic.Sys
                 }
                 using (var db = GetSqlSugarDB(DbConnType.QPAnchorRecordDB))
                 {
-                    var query = db.Queryable<SysShopAnchorEntity, SysAnchor, SysIncomeEntity>((at, st, it) => new object[] {
+                    var query = db.Queryable<SysShopAnchorEntity, SysAnchor, SysAnchorInfoEntity, SysIncomeEntity>((at, st, bt, it) => new object[] {
                         JoinType.Left,at.AnchorID==st.id,
+                        JoinType.Left,st.id==bt.aid,
                         JoinType.Left, st.id == it.AnchorID })
-                        .Where((at, st, it) => at.ShopID == OperatorProvider.Instance.Current.ShopID)
-                        .Where((at, st, it) => it.opdate >= Convert.ToDateTime(dic["startTime"]) && it.opdate < Convert.ToDateTime(dic["endTime"]))
-                        .WhereIF(dic.ContainsKey("Name") && !string.IsNullOrEmpty(dic["Name"].ToString()), (at, st, it) => st.username.Contains(dic["Name"].ToString()) || st.nickname.Contains(dic["Name"].ToString()))
+                        .Where((at, st, bt, it) => at.ShopID == OperatorProvider.Instance.Current.ShopID)
+                        .Where((at, st, bt, it) => it.opdate >= Convert.ToDateTime(dic["startTime"]) && it.opdate < Convert.ToDateTime(dic["endTime"]))
+                        .WhereIF(dic.ContainsKey("Name") && !string.IsNullOrEmpty(dic["Name"].ToString()), (at, st, it) => st.anchorName.Contains(dic["Name"].ToString()) || st.nickName.Contains(dic["Name"].ToString()))
                         .WithCache(60);
-                    sumModel = query.Clone().Select((at, st, it) => new IncomeTemplateModel
+                    sumModel = query.Clone().Select((at, st, bt, it) => new IncomeTemplateModel
                     {
                         tip_income = SqlFunc.AggregateSum(it.tip_income),
                         agent_income = SqlFunc.AggregateSum(it.agent_income),
                         hour_income = SqlFunc.AggregateSum(it.hour_income),
-                        test_income = SqlFunc.AggregateSum(it.test_income),
-                        Balance = SqlFunc.AggregateSum(st.balance)
+                        Platform_income = SqlFunc.AggregateSum(it.Platform_income),
+                        Balance = SqlFunc.AggregateSum(bt.gold)
                     }).First();
-                    res = query.GroupBy((at, st, it) => new { at.AnchorID, st.username, st.nickname, st.balance, st.isCollet })
-                          .Select((at, st, it) => new IncomeTemplateModel
+                    res = query.GroupBy((at, st, bt, it) => new { at.AnchorID, st.anchorName, st.nickName, bt.gold })
+                          .Select((at, st, bt, it) => new IncomeTemplateModel
                           {
                               AnchorID = at.AnchorID,
-                              AnchorName = st.username,
-                              NickName = st.nickname,
-                              Balance = st.balance,
-                              isCollet = st.isCollet,
+                              AnchorName = st.anchorName,
+                              NickName = st.nickName,
+                              Balance = bt.gold,
                               tip_income = SqlFunc.AggregateSum(it.tip_income),
                               agent_income = SqlFunc.AggregateSum(it.agent_income),
                               hour_income = SqlFunc.AggregateSum(it.hour_income),
-                              test_income = SqlFunc.AggregateSum(it.test_income),
+                              Platform_income = SqlFunc.AggregateSum(it.Platform_income),
                           })
                           .OrderBy(" sum(it.tip_income) desc")
                           .ToPageList(parm.page, parm.limit, ref totalCount);
@@ -396,7 +393,7 @@ namespace Elight.Logic.Sys
                         JoinType.Left, at.AnchorID == it.AnchorID })
                           .Where((at, st, it) => at.ShopID == OperatorProvider.Instance.Current.ShopID)
                           .Where((at, st, it) => it.sendtime >= Convert.ToDateTime(dic["startTime"]) && it.sendtime < Convert.ToDateTime(dic["endTime"]))
-                          .WhereIF(dic.ContainsKey("userName") && !string.IsNullOrEmpty(dic["userName"].ToString()), (at, st, it) => st.username.Contains(dic["userName"].ToString()) || st.nickname.Contains(dic["userName"].ToString()))
+                          .WhereIF(dic.ContainsKey("userName") && !string.IsNullOrEmpty(dic["userName"].ToString()), (at, st, it) => st.anchorName.Contains(dic["userName"].ToString()) || st.nickName.Contains(dic["userName"].ToString()))
                           .WithCache(60);
                     sumTotalAmount = query.Clone().Sum((at, st, it) => it.totalamount);
                     res = query
@@ -410,8 +407,8 @@ namespace Elight.Logic.Sys
                               totalamount = it.totalamount,
                               username = it.username,
                               sendtime = it.sendtime,
-                              AnchorName = st.username,
-                              AnchorNickName = st.nickname
+                              AnchorName = st.anchorName,
+                              AnchorNickName = st.nickName
                           })
                          .OrderBy(" it.sendtime desc")
                          .ToPageList(parm.page, parm.limit, ref totalCount);
@@ -456,7 +453,7 @@ namespace Elight.Logic.Sys
         /// </summary>
         /// <param name="parm"></param>
         /// <returns></returns>
-        public List<HourModel> GetHourDetailsPage(PageParm parm, ref int totalCount, ref decimal sumAmount, ref int sumDuration)
+        public List<HourModel> GetHourDetailsPage(PageParm parm, ref int totalCount, ref decimal sumAmount, ref decimal sumDuration)
         {
             var result = new List<HourModel>();
             try
@@ -472,57 +469,28 @@ namespace Elight.Logic.Sys
                 }
                 using (var db = GetSqlSugarDB(DbConnType.QPVideoAnchorDB))
                 {
-                    if (dic.ContainsKey("userName") && dic["userName"].ToString() == "-1")//选中全部
-                    {
-                        var query = db.Queryable<SysUserAnchor, SysAnchor, LiveCallbackHourEntity>((it, st, gt) => new object[] { JoinType.Left, it.AnchorID == st.id, JoinType.Left, st.id == gt.stream_id })
-                                  .Where((it, st, gt) => it.UserID == OperatorProvider.Instance.Current.UserId)
-                                  .Where((it, st, gt) => gt.begintime >= Convert.ToDateTime(dic["startTime"]) && gt.begintime < Convert.ToDateTime(dic["endTime"]))
-                                  .WhereIF(dic.ContainsKey("isLive") && Convert.ToInt32(dic["isLive"]) != -1, (it, st, gt) => gt.islive == Convert.ToInt32(dic["isLive"]));
-                        var sumReuslt = query.Clone().Select((it, st, gt) => new { amount = SqlFunc.AggregateSum(gt.amount), duration = SqlFunc.AggregateSum(gt.duration) }).First();
-                        sumAmount = sumReuslt.amount;
-                        sumDuration = sumReuslt.duration;
-                        return query
-                             .Select((it, st, gt) => new HourModel
-                             {
-                                 AnchorName = st.username,
-                                 NickName = st.nickname,
-                                 begintime = gt.begintime,
-                                 endtime = gt.endtime,
-                                 duration = gt.duration,
-                                 source = gt.source,
-                                 status = gt.status,
-                                 amount = gt.amount,
-                                 islive = gt.islive
-                             }).WithCache(30)
-                             .MergeTable()
-                            .OrderBy(it => it.begintime, OrderByType.Desc)
-                            .ToPageList(parm.page, parm.limit, ref totalCount);
-                    }
-                    else//查询单个用户
-                    {
-                        var query = db.Queryable<LiveCallbackHourEntity, SysAnchor>((it, st) => new object[] { JoinType.Left, it.stream_id == st.id })
-                                 .Where(it => it.begintime >= Convert.ToDateTime(dic["startTime"]) && it.begintime < Convert.ToDateTime(dic["endTime"]))
-                                 .Where(it => it.stream_id == Convert.ToInt32(dic["userName"]))
-                                 .WhereIF(dic.ContainsKey("isLive") && Convert.ToInt32(dic["isLive"]) != -1, it => it.islive == Convert.ToInt32(dic["isLive"]));
-                        var sumReuslt = query.Clone().Select((it, st) => new { amount = SqlFunc.AggregateSum(it.amount), duration = SqlFunc.AggregateSum(it.duration) }).First();
-                        sumAmount = sumReuslt.amount;
-                        sumDuration = sumReuslt.duration;
-                        return query
-                             .Select((it, st) => new HourModel
-                             {
-                                 AnchorName = st.username,
-                                 NickName = st.nickname,
-                                 begintime = it.begintime,
-                                 endtime = it.endtime,
-                                 duration = it.duration,
-                                 source = it.source,
-                                 status = it.status,
-                                 amount = it.amount,
-                                 islive = it.islive
-                             }).WithCache(30)//缓存30秒
-                            .OrderBy(it => it.begintime, OrderByType.Desc)
-                            .ToPageList(parm.page, parm.limit, ref totalCount);
-                    }
+                    var query = db.Queryable<SysShopAnchorEntity, SysAnchor, SysAnchorLiveRecordEntity>((at, bt, ct) => new object[] { JoinType.Left, at.AnchorID == bt.id, JoinType.Left, bt.id == ct.aid })
+                                  .Where((at, bt, ct) => at.ShopID == OperatorProvider.Instance.Current.ShopID)
+                                  .Where((at, bt, ct) => ct.ontime >= Convert.ToDateTime(dic["startTime"]) && ct.ontime < Convert.ToDateTime(dic["endTime"]))
+                                  .WhereIF(dic.ContainsKey("isLive") && Convert.ToInt32(dic["isLive"]) == 1, (at, bt, ct) => SqlFunc.IsNullOrEmpty(ct.uptime))
+                                  .WhereIF(dic.ContainsKey("isLive") && Convert.ToInt32(dic["isLive"]) == 0, (at, bt, ct) => !SqlFunc.IsNullOrEmpty(ct.uptime))
+                                  .WhereIF(dic.ContainsKey("userName") && Convert.ToInt32(dic["userName"]) != -1, (at, bt, ct) => bt.id == Convert.ToInt32(dic["userName"]))
+                                  .WithCache(30);//缓存30秒
+                    var sumReuslt = query.Clone().Select((at, bt, ct) => new { amount = SqlFunc.AggregateSum(ct.amount), duration = SqlFunc.AggregateSum(ct.livetime) }).First();
+                    sumAmount = sumReuslt.amount;
+                    sumDuration = sumReuslt.duration;
+                    return query
+                          .Select((at, bt, ct) => new HourModel
+                          {
+                              AnchorName = bt.anchorName,
+                              NickName = bt.nickName,
+                              begintime = ct.ontime,
+                              endtime = ct.uptime,
+                              duration = ct.livetime,
+                              islive = SqlFunc.IIF(SqlFunc.IsNullOrEmpty(ct.uptime), 1, 0)
+                          })
+                          .OrderBy(" ct.ontime desc")
+                          .ToPageList(parm.page, parm.limit, ref totalCount);
                 }
             }
             catch (Exception ex)
@@ -546,12 +514,12 @@ namespace Elight.Logic.Sys
             {
                 using (var db = GetInstance())
                 {
-                    result = db.Queryable<SysUserAnchor, SysAnchor>((st, it) => new object[] { JoinType.Left, st.AnchorID == it.id })
-                                     .Where((st, it) => st.UserID == OperatorProvider.Instance.Current.UserId)
+                    result = db.Queryable<SysShopAnchorEntity, SysAnchor>((st, it) => new object[] { JoinType.Left, st.AnchorID == it.id })
+                                     .Where((st, it) => st.ShopID == OperatorProvider.Instance.Current.ShopID)
                                      .Select((st, it) => new
                                      {
-                                         nickName = string.IsNullOrEmpty(it.nickname) ? it.username : it.nickname,
-                                         userName = it.username,
+                                         nickName = string.IsNullOrEmpty(it.nickName) ? it.anchorName : it.nickName,
+                                         userName = it.anchorName,
                                      }).ToJson();
                 }
             }
@@ -576,11 +544,11 @@ namespace Elight.Logic.Sys
             {
                 using (var db = GetInstance())
                 {
-                    result = db.Queryable<SysUserAnchor, SysAnchor>((st, it) => new object[] { JoinType.Left, st.AnchorID == it.id })
-                                    .Where((st, it) => st.UserID == OperatorProvider.Instance.Current.UserId)
+                    result = db.Queryable<SysShopAnchorEntity, SysAnchor>((st, it) => new object[] { JoinType.Left, st.AnchorID == it.id })
+                                    .Where((st, it) => st.ShopID == OperatorProvider.Instance.Current.ShopID)
                                     .Select((st, it) => new
                                     {
-                                        nickName = string.IsNullOrEmpty(it.nickname) ? it.username : it.nickname,
+                                        nickName = string.IsNullOrEmpty(it.nickName) ? it.anchorName : it.nickName,
                                         it.id
                                     }).ToJson();
                 }

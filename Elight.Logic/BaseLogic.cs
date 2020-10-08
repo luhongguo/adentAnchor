@@ -18,6 +18,7 @@ namespace Elight.Logic.Base
         public static readonly string QPAgentAnchorDB = ConfigurationManager.AppSettings["QPAgentAnchorDB"];
         public static readonly string QPVideoAnchorDB = ConfigurationManager.AppSettings["QPVideoAnchorDB"];
         public static readonly string _DBType = ConfigurationManager.AppSettings["DBType"];
+        public static readonly string Image_CDN = ConfigurationManager.AppSettings["Image_CDN"];
         public enum DbConnType
         {
             /// <summary>

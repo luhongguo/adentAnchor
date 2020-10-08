@@ -45,7 +45,7 @@ namespace Elight.Logic.Sys
                        JoinType.Left,gt.parentID==at.Id
                      })
                                .Where((bt, gt, it, at) => bt.ShopID == OperatorProvider.Instance.Current.ShopID && !SqlFunc.IsNullOrEmpty(gt.id))
-                               .WhereIF(dic.ContainsKey("Name") && !string.IsNullOrEmpty(dic["Name"].ToString()), (bt, gt, it, at) => it.username.Contains(dic["Name"].ToString()) || it.nickname.Contains(dic["Name"].ToString()))
+                               .WhereIF(dic.ContainsKey("Name") && !string.IsNullOrEmpty(dic["Name"].ToString()), (bt, gt, it, at) => it.anchorName.Contains(dic["Name"].ToString()) || it.nickName.Contains(dic["Name"].ToString()))
                                .Select((bt, gt, it, at) => new SysAnchorRebateEntity
                                {
                                    id = gt.id,
@@ -54,8 +54,8 @@ namespace Elight.Logic.Sys
                                    ModifiedBy = gt.ModifiedBy,
                                    ModifiedTime = gt.ModifiedTime,
                                    CreateTime = gt.CreateTime,
-                                   AnchorName = it.username,
-                                   AnchorNickName = it.nickname,
+                                   AnchorName = it.anchorName,
+                                   AnchorNickName = it.nickName,
                                    UserAccount = at.Account
                                })
                                .ToPageList(parm.page, parm.limit, ref totalCount);
@@ -81,8 +81,8 @@ namespace Elight.Logic.Sys
                     .Select((A, B, C) => new SysAnchorRebateEntity
                     {
                         id = A.id,
-                        AnchorName = B.username,
-                        AnchorNickName = B.nickname,
+                        AnchorName = B.anchorName,
+                        AnchorNickName = B.nickName,
                         TipRebate = A.TipRebate,
                         HourRebate = A.TipRebate,
                         UserAccount = C.Account
@@ -161,7 +161,7 @@ namespace Elight.Logic.Sys
             {
                 return db.Queryable<SysShopAnchorEntity, SysAnchor>((it, st) => new object[] { JoinType.Left, it.AnchorID == st.id })
                        .Where(it => it.ShopID == OperatorProvider.Instance.Current.ShopID)
-                       .Where((it, st) => st.username == username)
+                       .Where((it, st) => st.anchorName == username)
                        .Select((it, st) => st)
                        .First();
             }

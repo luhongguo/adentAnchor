@@ -45,9 +45,9 @@ namespace Elight.Logic.Sys
                                 JoinType.Left,at.orderno==dt.orderno
                       })
                           .Where((et, at, bt, ct, dt) => et.ShopID == OperatorProvider.Instance.Current.ShopID)
-                          .Where((et, at, bt, ct, dt) => at.StartDate >= Convert.ToDateTime(dic["startTime"]) && at.StartDate < Convert.ToDateTime(dic["endTime"]))
+                          .Where((et, at, bt, ct, dt) => at.StartDate >= Convert.ToDateTime(dic["startTime"]) && at.StartDate <= Convert.ToDateTime(dic["endTime"]))
                           .WhereIF(dic.ContainsKey("AgentName") && !string.IsNullOrEmpty(dic["AgentName"].ToString()), (et, at, bt, ct, dt) => bt.Account.Contains(dic["AgentName"].ToString()))
-                          .WhereIF(dic.ContainsKey("AnchorName") && !string.IsNullOrEmpty(dic["AnchorName"].ToString()), (et, at, bt, ct, dt) => ct.username.Contains(dic["AnchorName"].ToString()) || ct.nickname.Contains(dic["AnchorName"].ToString()))
+                          .WhereIF(dic.ContainsKey("AnchorName") && !string.IsNullOrEmpty(dic["AnchorName"].ToString()), (et, at, bt, ct, dt) => ct.anchorName.Contains(dic["AnchorName"].ToString()) || ct.nickName.Contains(dic["AnchorName"].ToString()))
                           .WithCache(60);
                     sumModel = query.Clone().Select((et, at, bt, ct, dt) => new TipIncomeDetailModel
                     {
@@ -60,8 +60,8 @@ namespace Elight.Logic.Sys
                          .Select((et, at, bt, ct, dt) => new TipIncomeDetailModel
                          {
                              UserName = bt.Account,
-                             AnchorName = ct.username,
-                             AnchorNickName = ct.nickname,
+                             AnchorName = ct.anchorName,
+                             AnchorNickName = ct.nickName,
                              UserIncome = at.UserIncome,
                              AnchorIncome = at.AnchorIncome,
                              PlatformIncome = at.PlatformIncome,
