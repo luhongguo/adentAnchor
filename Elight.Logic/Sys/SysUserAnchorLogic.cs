@@ -254,10 +254,10 @@ namespace Elight.Logic.Sys
                         test_income = SqlFunc.AggregateSum(it.test_income),
                         Balance = SqlFunc.AggregateSum(st.balance)
                     }).First();
-                    res = query.GroupBy((at, st, it) => new { it.AnchorID, st.username, st.nickname, st.balance, st.isCollet })
+                    res = query.GroupBy((at, st, it) => new { at.AnchorID, st.username, st.nickname, st.balance, st.isCollet })
                           .Select((at, st, it) => new IncomeTemplateModel
                           {
-                              AnchorID = it.AnchorID,
+                              AnchorID = at.AnchorID,
                               AnchorName = st.username,
                               NickName = st.nickname,
                               Balance = st.balance,
