@@ -273,8 +273,10 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\System\Controllers\AnchorBankController.cs" />
     <Compile Include="Areas\System\Controllers\AnchorController.cs" />
     <Compile Include="Areas\System\Controllers\AnchorRebateController.cs" />
+    <Compile Include="Areas\System\Controllers\AnchorWithdrawalRecordController.cs" />
     <Compile Include="Areas\System\Controllers\ItemController.cs" />
     <Compile Include="Areas\System\Controllers\ItemsDetailController.cs" />
     <Compile Include="Areas\System\Controllers\LogController.cs" />
@@ -2105,6 +2107,11 @@
     <Content Include="Areas\System\Views\AnchorRebate\Index.cshtml" />
     <Content Include="Areas\System\Views\AnchorRebate\Form.cshtml" />
     <Content Include="Areas\System\Views\TipIncomeDetail\Index.cshtml" />
+    <Content Include="Areas\System\Views\AnchorBank\Form.cshtml" />
+    <Content Include="Areas\System\Views\AnchorBank\Index.cshtml" />
+    <Content Include="Areas\System\Views\AnchorWithdrawalRecord\Index.cshtml" />
+    <Content Include="Areas\System\Views\AnchorWithdrawalRecord\Form.cshtml" />
+    <Content Include="Areas\System\Views\AnchorWithdrawalRecord\Handle.cshtml" />
     <None Include="Properties\PublishProfiles\发布.pubxml" />
     <Content Include="Scripts\buttons.js" />
     <Content Include="Scripts\index.js.flow" />

@@ -214,7 +214,7 @@ namespace Elight.Logic.Sys
             return result;
         }
 
-       
+
         /// <summary>
         /// 主播财务报表分页信息
         /// </summary>
@@ -605,6 +605,42 @@ namespace Elight.Logic.Sys
                             Name = st.code,
                             ID = st.id,
                         })).ToJson();
+            }
+        }
+        /// <summary>
+        /// 验证主播是否存在
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public SysAnchor CheckAnchorName(string account)
+        {
+            using (var db = GetInstance())
+            {
+                return db.Queryable<SysShopAnchorEntity, SysAnchor>((it, A) => new object[] { JoinType.Left, it.AnchorID == A.id })
+                    .Where((it, A) => it.ShopID == OperatorProvider.Instance.Current.ShopID)
+                    .Where((it, A) => A.anchorName == account)
+                    .Select((it, A) => new SysAnchor
+                    {
+                        id = A.id,
+                    }).First();
+            }
+        }
+        /// <summary>
+        /// 获取主播余额
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public SysAnchorInfoEntity GetAnchorBalance(int id)
+        {
+            using (var db = GetSqlSugarDB(DbConnType.QPVideoAnchorDB))
+            {
+                return db.Queryable<SysShopAnchorEntity, SysAnchorInfoEntity>((B, A) => new object[] { JoinType.Left, B.AnchorID == A.aid })
+                    .Where((B, A) => A.aid == id && B.ShopID == OperatorProvider.Instance.Current.ShopID)
+                    .Select((B, A) => new SysAnchorInfoEntity
+                    {
+                        aid = A.aid,
+                        gold = A.gold
+                    }).First();
             }
         }
     }
