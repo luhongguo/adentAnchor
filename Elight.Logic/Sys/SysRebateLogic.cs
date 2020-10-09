@@ -20,7 +20,7 @@ namespace Elight.Logic.Sys
         /// </summary>
         /// <param name="parm"></param>
         /// <returns></returns>
-        public List<SysRebateEntity> GetHourDetailsPage(PageParm parm, ref int totalCount)
+        public List<SysRebateEntity> GetRebateListPage(PageParm parm, ref int totalCount)
         {
             var result = new List<SysRebateEntity>();
             try
@@ -36,10 +36,20 @@ namespace Elight.Logic.Sys
                 }
                 using (var db = GetSqlSugarDB(DbConnType.QPAgentAnchorDB))
                 {
-                    if (dic.ContainsKey("userName") && dic["userName"].ToString() == "-1")//选中全部
-                    {
-                       
-                    }
+                    return db.Queryable<SysRebateEntity, SysUser>((gt, it) => new object[] { JoinType.Left, gt.UserID == it.Id })
+                             .Where((gt, it) => gt.ShopID == OperatorProvider.Instance.Current.ShopID)
+                             .WhereIF(dic.ContainsKey("Name") && !string.IsNullOrEmpty(dic["Name"].ToString()), (gt, it) => it.Account.Contains(dic["Name"].ToString()) || it.RealName.Contains(dic["Name"].ToString()))
+                             .Select((gt, it) => new SysRebateEntity
+                             {
+                                 id = gt.id,
+                                 TipRebate = gt.TipRebate,
+                                 HourRebate = gt.HourRebate,
+                                 ModifiedBy = gt.ModifiedBy,
+                                 ModifiedTime = gt.ModifiedTime,
+                                 CreateTime = gt.CreateTime,
+                                 UserAccount = it.Account
+                             })
+                             .ToPageList(parm.page, parm.limit, ref totalCount);
                 }
             }
             catch (Exception ex)

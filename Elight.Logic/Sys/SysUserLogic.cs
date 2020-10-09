@@ -29,7 +29,7 @@ namespace Elight.Logic.Sys
                     ShopID=A.ShopID,
                     Account = A.Account,
                     RealName = A.RealName,
-                    CompanyCode = A.CompanyCode,
+                    Balance = A.Balance,
                     Avatar = A.Avatar,
                     Gender = A.Gender,
                     Birthday = A.Birthday,
@@ -186,7 +186,7 @@ namespace Elight.Logic.Sys
                     Avatar = A.Avatar,
                     MobilePhone = A.MobilePhone,
                     IsEnabled = A.IsEnabled,
-                    CompanyCode = A.CompanyCode,
+                    Balance = A.Balance,
                     Email = A.Email,
                     Signature = A.Signature
                 }).First();

@@ -30,10 +30,10 @@ namespace Elight.WebUI.Areas.System.Controllers
         /// <param name="keyWord">查询条件</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetRebateList(PageParm parm)
+        public ActionResult GetRebateListPage(PageParm parm)
         {
             int totalCount = 0;
-            var res = sysRebateLogic.GetHourDetailsPage(parm, ref totalCount);
+            var res = sysRebateLogic.GetRebateListPage(parm, ref totalCount);
             var result = new
             {
                 code = 0,
