@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Elight.Utility.Operator;
 using Elight.Utility.Security;
 using Elight.Utility.Extension;
+using Elight.Utility.Log;
 
 namespace Elight.Logic.Sys
 {
@@ -26,7 +27,7 @@ namespace Elight.Logic.Sys
                 return db.Queryable<SysUser>().Where((A) => A.Account == account && A.ShopID != 0).Select((A) => new SysUser
                 {
                     Id = A.Id,
-                    ShopID=A.ShopID,
+                    ShopID = A.ShopID,
                     Account = A.Account,
                     RealName = A.RealName,
                     Balance = A.Balance,
@@ -59,7 +60,7 @@ namespace Elight.Logic.Sys
         {
             using (var db = GetInstance())
             {
-                return db.Queryable<SysUser>().Where((A) => A.Account == account && A.ShopID==OperatorProvider.Instance.Current.ShopID).Select(A => new SysUser
+                return db.Queryable<SysUser>().Where((A) => A.Account == account && A.ShopID == OperatorProvider.Instance.Current.ShopID).Select(A => new SysUser
                 {
                     Id = A.Id,
                     ShopID = A.ShopID,
@@ -67,7 +68,26 @@ namespace Elight.Logic.Sys
                 }).First();
             }
         }
-
+        /// <summary>
+        /// 获取用户
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public SysUser GetUserByID(string id)
+        {
+            using (var db = GetInstance())
+            {
+                return db.Queryable<SysUser>().Where((A) => A.Id == id).Select(A => new SysUser
+                {
+                    Id = A.Id,
+                    ShopID = A.ShopID,
+                    Account = A.Account,
+                    RealName = A.RealName,
+                    Balance = A.Balance,
+                    Avatar = A.Avatar,
+                }).First();
+            }
+        }
         /// <summary>
         /// 修改用户基础信息
         /// </summary>
@@ -205,15 +225,15 @@ namespace Elight.Logic.Sys
         {
             using (var db = GetInstance())
             {
-                return db.Queryable<SysUser,SysUserRoleRelation,SysRole>((A,B,C)=>new object[] {JoinType.Left,A.Id==B.UserId,JoinType.Left,B.RoleId==C.Id })
+                return db.Queryable<SysUser, SysUserRoleRelation, SysRole>((A, B, C) => new object[] { JoinType.Left, A.Id == B.UserId, JoinType.Left, B.RoleId == C.Id })
                          .WhereIF(!keyWord.IsNullOrEmpty(), it => (it.Account.Contains(keyWord) || it.RealName.Contains(keyWord)))
-                         .Where((A) => A.DeleteMark == "0" && A.ShopID==OperatorProvider.Instance.Current.ShopID).OrderBy((A) => A.SortCode).Select((A,B,C) => new SysUser
+                         .Where((A) => A.DeleteMark == "0" && A.ShopID == OperatorProvider.Instance.Current.ShopID).OrderBy((A) => A.SortCode).Select((A, B, C) => new SysUser
                          {
                              Id = A.Id,
                              Account = A.Account,
-                             Balance=A.Balance,
+                             Balance = A.Balance,
                              RealName = A.RealName,
-                             ShopName=C.Name,//接收角色名称
+                             ShopName = C.Name,//接收角色名称
                              Avatar = A.Avatar,
                              IsEnabled = A.IsEnabled,
                          }).ToPageList(pageIndex, pageSize, ref totalCount);
@@ -372,6 +392,36 @@ namespace Elight.Logic.Sys
                     return 0;
                 }
             }
+        }
+        /// <summary>
+        /// 经纪人名称下拉框
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="keyWord"></param>
+        /// <param name="totalCount"></param>
+        /// <returns></returns>
+        public string GetUserIDSelect()
+        {
+            var result = "";
+            try
+            {
+                using (var db = GetInstance())
+                {
+                    result = db.Queryable<SysUser>()
+                        .Where(it => it.ShopID == OperatorProvider.Instance.Current.ShopID)
+                                .Select((it) => new
+                                {
+                                    AgentName = it.Account,
+                                    it.Id,
+                                }).ToJson();
+                }
+            }
+            catch (Exception ex)
+            {
+                new LogLogic().Write(Level.Error, "经纪人名称下拉框", ex.Message, ex.StackTrace);
+            }
+            return result;
         }
     }
 }

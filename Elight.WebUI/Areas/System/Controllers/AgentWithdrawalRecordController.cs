@@ -10,15 +10,14 @@ using System.Web.Mvc;
 namespace Elight.WebUI.Areas.System.Controllers
 {
     [LoginChecked]
-    public class AnchorWithdrawalRecordController : BaseController
+    public class AgentWithdrawalRecordController : BaseController
     {
-        private readonly SysAnchorWithdrawalRecordLogic sysAnchorWithdrawalRecordLogic;
-        public AnchorWithdrawalRecordController()
+        private readonly SysAgentWithdrawalRecordLogic sysAgentWithdrawalRecordLogic;
+        public AgentWithdrawalRecordController()
         {
-            sysAnchorWithdrawalRecordLogic = new SysAnchorWithdrawalRecordLogic();
+            sysAgentWithdrawalRecordLogic = new SysAgentWithdrawalRecordLogic();
         }
         // GET: System/AgentWithdrawalRecord
-        [HttpGet, AuthorizeChecked]
         public ActionResult Index()
         {
             return View();
@@ -34,7 +33,7 @@ namespace Elight.WebUI.Areas.System.Controllers
         public ActionResult GetAgentWithdrawalRecordPage(PageParm parm)
         {
             int totalCount = 0;
-            var res = sysAnchorWithdrawalRecordLogic.GetAgentWithdrawalRecordPage(parm, ref totalCount);
+            var res = sysAgentWithdrawalRecordLogic.GetAgentWithdrawalRecordPage(parm, ref totalCount);
             return pageSuccess(res, totalCount);
         }
         /// <summary>
@@ -52,9 +51,9 @@ namespace Elight.WebUI.Areas.System.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost, AuthorizeChecked, ValidateAntiForgeryToken]
-        public ActionResult Form(SysAnchorWithdrawalRecordEntity model)
+        public ActionResult Form(SysAgentWithdrawalRecordEntity model)
         {
-            int row = sysAnchorWithdrawalRecordLogic.Insert(model);
+            int row = sysAgentWithdrawalRecordLogic.Insert(model);
             return row > 0 ? Success() : Error();
         }
 
@@ -75,7 +74,7 @@ namespace Elight.WebUI.Areas.System.Controllers
         [HttpPost]
         public ActionResult GetForm(long primaryKey)
         {
-            SysAnchorWithdrawalRecordEntity entity = sysAnchorWithdrawalRecordLogic.Get(primaryKey);
+            SysAgentWithdrawalRecordEntity entity = sysAgentWithdrawalRecordLogic.Get(primaryKey);
             return Content(entity.ToJson());
         }
         /// <summary>
@@ -84,17 +83,17 @@ namespace Elight.WebUI.Areas.System.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost, AuthorizeChecked, ValidateAntiForgeryToken]
-        public ActionResult Handle(SysAnchorWithdrawalRecordEntity model)
+        public ActionResult Handle(SysAgentWithdrawalRecordEntity model)
         {
             int row;
-            var withModel = sysAnchorWithdrawalRecordLogic.Get(model.id);
+            var withModel = sysAgentWithdrawalRecordLogic.Get(model.id);
             if (withModel.Status != 3)
             {
                 return Error("已经处理，不可重复处理!");
             }
             if (model.Status == 2)//驳回
             {
-                row = sysAnchorWithdrawalRecordLogic.Reject(model);
+                row = sysAgentWithdrawalRecordLogic.Reject(model);
             }
             else//成功
             {
@@ -102,16 +101,12 @@ namespace Elight.WebUI.Areas.System.Controllers
                 {
                     return Error("提现金额需要大于0!");
                 }
-                var agentModel = new SysUserAnchorLogic().GetAnchorBalance(withModel.AnchorID);
-                if (agentModel == null)
+                var agentModel = new SysUserLogic().GetUserByID(withModel.AgentID);
+                if (agentModel.Balance < model.WithdrawalAmount)
                 {
-                    return Error("主播不存在!");
+                    return Error("提现金额不可大于余额!可提现余额：" + agentModel.Balance);
                 }
-                if (agentModel.agentGold < model.WithdrawalAmount)
-                {
-                    return Error("提现金额不可大于余额!可提现余额：" + agentModel.gold);
-                }
-                row = sysAnchorWithdrawalRecordLogic.Update(model, agentModel);
+                row = sysAgentWithdrawalRecordLogic.Update(model, agentModel);
             }
             return row > 0 ? Success() : Error();
         }
