@@ -158,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseLogic.cs" />
+    <Compile Include="Sys\SysAgentBankLogic.cs" />
     <Compile Include="Sys\SysAnchorBankLogic.cs" />
     <Compile Include="Sys\SysAnchorLogic.cs" />
     <Compile Include="Sys\SysAnchorRebateLogic.cs" />
