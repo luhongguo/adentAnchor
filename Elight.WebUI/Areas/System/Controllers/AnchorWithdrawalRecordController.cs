@@ -107,7 +107,7 @@ namespace Elight.WebUI.Areas.System.Controllers
                 {
                     return Error("主播不存在!");
                 }
-                if (agentModel.gold < model.WithdrawalAmount)
+                if (agentModel.agentGold < model.WithdrawalAmount)
                 {
                     return Error("提现金额不可大于余额!可提现余额：" + agentModel.gold);
                 }

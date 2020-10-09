@@ -47,7 +47,7 @@ namespace Elight.Logic.Sys
                                     anchorName = it.anchorName,
                                     nickName = it.nickName,
                                     headUrl = SqlFunc.IIF(it.headUrl.Contains("http"), it.headUrl, Image_CDN + it.headUrl),
-                                    balance = at.gold,
+                                    balance = at.agentGold,
                                     follow = at.follow,
                                     birthday = it.birthday,
                                     status = at.status,
@@ -250,15 +250,15 @@ namespace Elight.Logic.Sys
                         agent_income = SqlFunc.AggregateSum(it.agent_income),
                         hour_income = SqlFunc.AggregateSum(it.hour_income),
                         Platform_income = SqlFunc.AggregateSum(it.Platform_income),
-                        Balance = SqlFunc.AggregateSum(bt.gold)
+                        Balance = SqlFunc.AggregateSum(bt.agentGold)
                     }).First();
-                    res = query.GroupBy((at, st, bt, it) => new { at.AnchorID, st.anchorName, st.nickName, bt.gold })
+                    res = query.GroupBy((at, st, bt, it) => new { at.AnchorID, st.anchorName, st.nickName, bt.agentGold })
                           .Select((at, st, bt, it) => new IncomeTemplateModel
                           {
                               AnchorID = at.AnchorID,
                               AnchorName = st.anchorName,
                               NickName = st.nickName,
-                              Balance = bt.gold,
+                              Balance = bt.agentGold,
                               tip_income = SqlFunc.AggregateSum(it.tip_income),
                               agent_income = SqlFunc.AggregateSum(it.agent_income),
                               hour_income = SqlFunc.AggregateSum(it.hour_income),
@@ -639,7 +639,7 @@ namespace Elight.Logic.Sys
                     .Select((B, A) => new SysAnchorInfoEntity
                     {
                         aid = A.aid,
-                        gold = A.gold
+                        agentGold = A.agentGold
                     }).First();
             }
         }
