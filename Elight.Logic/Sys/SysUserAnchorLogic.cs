@@ -478,7 +478,7 @@ namespace Elight.Logic.Sys
                                   .Where((at, bt, ct) => ct.ontime >= Convert.ToDateTime(dic["startTime"]) && ct.ontime < Convert.ToDateTime(dic["endTime"]))
                                   .WhereIF(dic.ContainsKey("isLive") && Convert.ToInt32(dic["isLive"]) == 1, (at, bt, ct) => SqlFunc.IsNullOrEmpty(ct.uptime))
                                   .WhereIF(dic.ContainsKey("isLive") && Convert.ToInt32(dic["isLive"]) == 0, (at, bt, ct) => !SqlFunc.IsNullOrEmpty(ct.uptime))
-                                  .WhereIF(dic.ContainsKey("userName") && Convert.ToInt32(dic["userName"]) != -1, (at, bt, ct) => bt.id == Convert.ToInt32(dic["userName"]))
+                                  .WhereIF(dic.ContainsKey("Name") && !string.IsNullOrEmpty(dic["Name"].ToString()), (at, bt, ct) => bt.anchorName.Contains(dic["Name"].ToString()) || bt.nickName.Contains(dic["Name"].ToString()))
                                   .WithCache(30);//缓存30秒
                     var sumReuslt = query.Clone().Select((at, bt, ct) => new { amount = SqlFunc.AggregateSum(ct.amount), duration = SqlFunc.AggregateSum(ct.livetime) }).First();
                     sumAmount = sumReuslt.amount;

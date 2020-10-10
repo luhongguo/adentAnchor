@@ -30,21 +30,21 @@
             <blockquote class="layui-elem-quote">
                 <div class="form-inline layui-form user-search">
                     <div class="layui-inline">
+                        <label class="layui-form-label">主播账号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="Name" placeholder="请输入主播账号或昵称" id="Name" autocomplete="off" class="layui-input" maxlength="25">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
                         <label class="layui-form-label">直播状态</label>
                         <div class="layui-input-block">
                             <select name="Status" id="Status" lay-filter="Level" lay-search>
                                 <option value="-1" selected>全部</option>
-                                <option value="0">正常</option>
                                 <option value="1">直播</option>
+                                <option value="0">正常</option>
                                 <option value="2">离线</option>
                                 <option value="3">禁用</option>
                             </select>
-                        </div>
-                    </div>
-                    <div class="layui-inline">
-                        <label class="layui-form-label">主播状态</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="Name" placeholder="请输入主播账号或昵称" id="Name" autocomplete="off" class="layui-input" maxlength="25">
                         </div>
                     </div>
                     <div class="layui-inline">
@@ -103,22 +103,6 @@
             elem: '#endTimeReload' //指定元素
             , type: 'datetime'
         });
-        //} else {
-        //    $.ajax({
-        //        url: "/System/UserAnchor/selectCompanyCodeList",
-        //        type: "get",
-        //        success: function (data) {
-        //            var $html = " <option value='-1'>全部</option>";
-        //            $.each(eval("(" + data + ")"), function (i, v) {
-        //                $html += "<option value='" + v.Name + "'>" + v.Name + "</option>";
-        //            })
-        //            $("select[name='companyCode']").append($html);
-        //            //append后必须从新渲染
-        //            form.render('select');
-        //            renderTable(getWhere());
-        //        }
-        //    }, 'json');
-        //}
         function renderTable(where) {
             table.render({
                 elem: '#table'
@@ -163,16 +147,15 @@
         form.on('submit(search)', function (data) {
             reloadTable(data.field)
         });
-        ////监听下拉框的搜索
-        //form.on('select(Level)', function (data) {
-        //    var startTime = $("#startTimeReload").val();
-        //    var endTime = $("#endTimeReload").val();
-        //    var Name = $("#Name").val();
-        //    var isCollet = $("#isCollet").val();
-        //    var isColletCode = $("#isColletCode").val();
-        //    var obj = { isCollet: data.value, startTime: startTime, endTime: endTime, Name: Name, isCollet: isCollet, isColletCode: isColletCode }
-        //    reloadTable(obj);
-        //});
+        //监听下拉框的搜索
+        form.on('select(Level)', function (data) {
+            var startTime = $("#startTimeReload").val();
+            var endTime = $("#endTimeReload").val();
+            var Name = $("#Name").val();
+            var Status = $("#Status").val();
+            var obj = { startTime: startTime, endTime: endTime, Name: Name, Status: Status }
+            reloadTable(obj);
+        });
         function reloadTable(field) {
             //执行重载
             table.reload('report', {

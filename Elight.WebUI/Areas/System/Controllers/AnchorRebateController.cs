@@ -64,6 +64,7 @@ namespace Elight.WebUI.Areas.System.Controllers
         {
             if (model.id == 0)
             {
+                model.AnchorName = model.AnchorName.Trim();
                 var userModel = sysAnchorRebateLogic.CheckAnchor(model.AnchorName);
                 if (userModel == null)
                 {
