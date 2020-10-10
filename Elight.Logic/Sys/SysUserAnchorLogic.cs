@@ -1,4 +1,5 @@
-﻿using Elight.Entity.Model;
+﻿using Elight.Entity.Enum;
+using Elight.Entity.Model;
 using Elight.Entity.Sys;
 using Elight.Logic.Base;
 using Elight.Utility.Log;
@@ -39,6 +40,7 @@ namespace Elight.Logic.Sys
                 {
                     result = db.Queryable<SysShopAnchorEntity, SysAnchor, SysAnchorInfoEntity>((st, it, at) => new object[] { JoinType.Left, st.AnchorID == it.id, JoinType.Left, it.id == at.aid })
                                 .Where((st, it) => st.ShopID == OperatorProvider.Instance.Current.ShopID)
+                                .WhereIF(dic.ContainsKey("Status") && Convert.ToInt32(dic["Status"]) != -1, (st, it, at) => at.status == (AnchorStatus)Convert.ToInt32(dic["Status"]))
                                 .WhereIF(dic.ContainsKey("Name") && !string.IsNullOrEmpty(dic["Name"].ToString()), (st, it, at) => it.anchorName.Contains(dic["Name"].ToString()) || it.nickName.Contains(dic["Name"].ToString()))
                                 .WhereIF(dic.ContainsKey("startTime") && !string.IsNullOrEmpty(dic["startTime"].ToString()) && !string.IsNullOrEmpty(dic["endTime"].ToString()), (st, it, at) => it.createTime >= Convert.ToDateTime(dic["startTime"]) && it.createTime < Convert.ToDateTime(dic["endTime"]))
                                 .Select((st, it, at) => new SysAnchor
@@ -52,7 +54,9 @@ namespace Elight.Logic.Sys
                                     birthday = it.birthday,
                                     status = at.status,
                                     createTime = it.createTime
-                                }).ToPageList(parm.page, parm.limit, ref totalCount);
+                                })
+                                .OrderBy(" at.agentGold desc")
+                                .ToPageList(parm.page, parm.limit, ref totalCount);
                 }
             }
             catch (Exception ex)
