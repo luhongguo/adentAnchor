@@ -12,7 +12,7 @@
                 <input type="text" name="Name" lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input">
             </div>
         </div>
-        <div class="layui-inline">
+        @*<div class="layui-inline">
             <label class="layui-form-label label-required">角色类型</label>
             <div class="layui-input-inline">
                 <select name="Type" lay-verify="required">
@@ -21,7 +21,7 @@
                     <option value="3">其他角色</option>
                 </select>
             </div>
-        </div>
+        </div>*@
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
@@ -52,9 +52,9 @@
 <script>
     layui.use('form', function () {
         var form = layui.form;
-        $("#OrganizeId").bindSelect({
-            url: "/System/Organize/GetListTreeSelect"
-        });
+        //$("#OrganizeId").bindSelect({
+        //    url: "/System/Organize/GetListTreeSelect"
+        //});
 
         var primaryKey = $.getQueryString("primaryKey");
         if (primaryKey) {

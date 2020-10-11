@@ -2,6 +2,13 @@
     ViewBag.Title = "Form";
     Layout = "~/Views/Shared/_Form.cshtml";
 }
+
+<style>
+    .layui-form-selectup dl {
+        top: 42px;
+        bottom: unset;
+    }
+</style>
 <form id="form" class="layui-form" style="margin-top: 25px">
     @Html.AntiForgeryToken()
     <div class="layui-form-item">
@@ -15,7 +22,7 @@
         <div class="layui-inline">
             <label class="layui-form-label ">初始密码</label>
             <div class="layui-input-inline">
-                <input type="password" name="Password" id="Password"  placeholder="请输入密码" autocomplete="new-password" class="layui-input">
+                <input type="password" name="Password" id="Password" placeholder="请输入密码" autocomplete="new-password" class="layui-input">
             </div>
         </div>
     </div>
@@ -27,9 +34,10 @@
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label label-required">公司代码</label>
+            <label class="layui-form-label label-required">启用</label>
             <div class="layui-input-inline">
-                <input type="text" name="CompanyCode" lay-verify="required" placeholder="请输入公司代码" autocomplete="off" class="layui-input">
+                <input type="radio" name="IsEnabled" value="1" title="是" checked />
+                <input type="radio" name="IsEnabled" value="0" title="否" />
             </div>
         </div>
     </div>
@@ -37,24 +45,8 @@
         <div class="layui-inline">
             <label class="layui-form-label label-required">角色属性</label>
             <div class="layui-input-inline">
-                <select lay-ignore name="RoleId" class="select2" id="RoleId" multiple="multiple" style="width: 514px;" lay-verify="required"></select>
-            </div>
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label ">移动电话</label>
-            <div class="layui-input-inline">
-                <input type="text" name="MobilePhone" placeholder="请输入手机" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label label-required">启用</label>
-            <div class="layui-input-inline">
-                <input type="radio" name="IsEnabled" value="1" title="是" checked />
-                <input type="radio" name="IsEnabled" value="0" title="否" />
+                @*<select lay-ignore name="RoleId" id="RoleId" multiple="multiple" style="width: 514px;" lay-verify="required"></select>*@
+                <select name="RoleId" id="RoleId" lay-filter="Level2" lay-verify="required" lay-search>  </select>
             </div>
         </div>
     </div>
@@ -72,18 +64,42 @@
         var element = layui.element;
         var laydate = layui.laydate;
         laydate.render({
-            elem:"#StrBirthday"
+            elem: "#StrBirthday"
         });
-        
+
         //$("#DepartmentId").bindSelect({
         //    url: "/System/Organize/GetListTreeSelect"
         //});
-
-        $("#RoleId").bindSelect({
+        var primaryKey = $.getQueryString("primaryKey");
+        $.ajax({
             url: "/System/Role/GetListTreeSelect",
-            title: '请选择角色'
-        });
-
+            type: "post",
+            success: function (dataTwo) {
+                var $htmlTwo = "";
+                $.each(eval("(" + dataTwo + ")"), function (i, v) {
+                    $htmlTwo += "<option value='" + v.id + "'>" + v.text + "</option>";
+                })
+                $("select[name='RoleId']").append($htmlTwo);
+                form.render('select');
+                if (primaryKey) {
+                    // $('#Account').attr('disabled', true).addClass('layui-disabled');
+                    //$('#Password').attr('disabled', true).val('******').addClass('layui-disabled');
+                    $.ajax({
+                        url: "/System/User/GetForm",
+                        data: { primaryKey: primaryKey },
+                        type: "post",
+                        dataType: "json",
+                        async: false,
+                        success: function (data) {
+                            $("#form").formSerialize(data);
+                            $("#RoleId").find("option[value='" + data.RoleId + "']").prop("selected", true);
+                            //append后必须从新渲染
+                            form.render('select');
+                        }
+                    });
+                }
+            }
+        }, 'json');
         //$('#Account').blur(function () {
         //    var userName = $('#Account').val();
         //    if (userName && userName.length > 0) {
@@ -96,21 +112,7 @@
         //    return false;
         //});
 
-        var primaryKey = $.getQueryString("primaryKey");
-        if (primaryKey) {
-           // $('#Account').attr('disabled', true).addClass('layui-disabled');
-            //$('#Password').attr('disabled', true).val('******').addClass('layui-disabled');
-            $.ajax({
-                url: "/System/User/GetForm",
-                data: { primaryKey: primaryKey },
-                type: "post",
-                dataType: "json",
-                async: false,
-                success: function (data) {
-                    $("#form").formSerialize(data);
-                }
-            });
-        }
+
 
         form.render();
 

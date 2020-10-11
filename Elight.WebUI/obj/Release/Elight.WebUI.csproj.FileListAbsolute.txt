@@ -144,3 +144,4 @@ E:\工作项目\AgentAnchorSolution\Elight.WebUI\obj\Release\Elight.WebUI.csproj
 E:\工作项目\AgentAnchorSolution\Elight.WebUI\obj\Release\Elight.WebUI.dll
 E:\工作项目\AgentAnchorSolution\Elight.WebUI\obj\Release\Elight.WebUI.pdb
 E:\工作项目\AgentAnchorSolution\Elight.WebUI\obj\Release\Elight.WebUI.csprojAssemblyReference.cache
+E:\工作项目\AgentAnchorSolution\Elight.WebUI\bin\Elight.Entity.xml

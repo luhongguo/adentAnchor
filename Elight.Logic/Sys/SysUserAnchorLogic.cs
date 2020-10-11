@@ -407,7 +407,7 @@ namespace Elight.Logic.Sys
                               giftname = it.giftname,
                               price = it.price,
                               quantity = it.quantity,
-                              ratio = it.ratio,
+                              Type = it.Type,
                               totalamount = it.totalamount,
                               username = it.username,
                               sendtime = it.sendtime,

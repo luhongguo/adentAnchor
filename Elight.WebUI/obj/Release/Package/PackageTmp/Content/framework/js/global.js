@@ -216,13 +216,19 @@ $.fn.bindChangeEvent = function ($event) {
         var modules = top.client.permission;
         var module = {};
         var childModules = [];
+/**
+*获取访问页面的权限ID。
+*/
         for (var i = 0; i < modules.length; i++) {
             if (modules[i].Url != "") {
                 if (url == modules[i].Url) {
                     module = modules[i];
                 }
             }
-        }
+    }
+/**
+*获取访问页面子集权限
+*/
         for (var i = 0; i < modules.length; i++) {
             if (modules[i].Url != "") {
                 if (modules[i].ParentId == module.Id) {
@@ -364,18 +370,26 @@ $.formSubmit = function (options) {
         async: options.async,
         dataType: "json",
         success: function (data) {
-            if (options.success && $.isFunction(options.success)) {
-                options.success(data);
-            }
-            if (options.close) {
-                $.layerClose();
-            }
-            if (options.shoQingDaig) {
+            if (data.state == 1) {//1成功
+                if (options.success && $.isFunction(options.success)) {
+                    options.success(data);
+                }
+                if (options.close) {
+                    $.layerClose();
+                }
+                if (options.shoQingDaig) {
+                    $.layerMsg(data.message, data.state);
+                }
+            } else {
                 $.layerMsg(data.message, data.state);
             }
         },
         error: function (xhr, status, error) {
-            $.layerMsg(error, "error");
+            if (xhr.status == 200 && xhr.statusText == "OK" && xhr.responseText.indexOf("对不起，您没有权限访问当前页面。") > 0) {//ajax请求无权限判断
+                alert("对不起，您没有权限操作")
+            } else {
+                $.layerMsg(error, "error");
+            }
         },
         beforeSend: function () {
 

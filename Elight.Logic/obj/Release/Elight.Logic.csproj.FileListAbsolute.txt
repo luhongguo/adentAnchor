@@ -66,3 +66,4 @@ E:\工作项目\AgentAnchorSolution\Elight.Logic\obj\Release\Elight.Logic.csproj
 E:\工作项目\AgentAnchorSolution\Elight.Logic\obj\Release\Elight.Logic.csproj.CopyComplete
 E:\工作项目\AgentAnchorSolution\Elight.Logic\obj\Release\Elight.Logic.dll
 E:\工作项目\AgentAnchorSolution\Elight.Logic\obj\Release\Elight.Logic.pdb
+E:\工作项目\AgentAnchorSolution\Elight.Logic\bin\Release\Elight.Entity.xml

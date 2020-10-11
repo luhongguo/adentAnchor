@@ -123,7 +123,7 @@
                 return false
             }
             //角色信息。
-            form.field.roleIds = $("#RoleId").val().join();
+            form.field.roleIds = $("#RoleId").val();
             //密码加密。
             form.field.password = $.md5(form.field['Password']);
             $.formSubmit({
