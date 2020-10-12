@@ -49,7 +49,7 @@ namespace Elight.Logic.Sys
                                     anchorName = it.anchorName,
                                     nickName = it.nickName,
                                     headUrl = SqlFunc.IIF(it.headUrl.Contains("http"), it.headUrl, Image_CDN + it.headUrl),
-                                    balance = at.agentGold,
+                                    balance = at.agentGold / 10,
                                     follow = at.follow,
                                     birthday = it.birthday,
                                     status = at.status,
@@ -254,7 +254,6 @@ namespace Elight.Logic.Sys
                         agent_income = SqlFunc.AggregateSum(it.agent_income),
                         hour_income = SqlFunc.AggregateSum(it.hour_income),
                         Platform_income = SqlFunc.AggregateSum(it.Platform_income),
-                        Balance = SqlFunc.AggregateSum(bt.agentGold)
                     }).First();
                     res = query.GroupBy((at, st, bt, it) => new { at.AnchorID, st.anchorName, st.nickName, bt.agentGold })
                           .Select((at, st, bt, it) => new IncomeTemplateModel

@@ -75,6 +75,7 @@ namespace Elight.Logic.Sys
                              sendtime = dt.sendtime,
                              Type = dt.Type
                          })
+                         .OrderBy(" it.sendtime desc")
                         .ToPageList(parm.page, parm.limit, ref totalCount);
                 }
             }

@@ -103,9 +103,9 @@
                             return d.UserName;
                         }
                     }
-                    , { field: 'UserIncome', title: '上级收益', totalRow: true }
-                    , { field: 'AnchorIncome', title: '主播收益', totalRow: true }
-                    , { field: 'PlatformIncome', title: '平台收益', totalRow: true }
+                    , { field: 'UserIncome', title: '上级收益(花币)', totalRow: true }
+                    , { field: 'AnchorIncome', title: '主播收益(花币)', totalRow: true }
+                    , { field: 'PlatformIncome', title: '平台收益(花币)', totalRow: true }
                     , {
                         field: 'UserRebate', title: '代理返点', templet: function (d) {
                             return d.UserRebate + "%";
@@ -129,9 +129,9 @@
                             }
                         }
                     }
-                    , { field: 'price', title: '单价' }
+                    , { field: 'price', title: '单价(花币)' }
                     , { field: 'quantity', title: '数量' }
-                    , { field: 'totalamount', title: '总金额', totalRow: true }
+                    , { field: 'totalamount', title: '总金额(花币)', totalRow: true }
                     , { field: 'sendtime', title: '打赏时间', width: 160 }
                 ]]
                 , request: {

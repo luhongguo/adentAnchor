@@ -99,8 +99,14 @@
                     , { field: 'price', title: '单价' }
                     , { field: 'quantity', title: '数量' }
                     , {
-                        field: 'ratio', title: '比率', templet: function (d) {
-                            return d.ratio + "%";
+                        field: 'Type', title: '收益类型', templet: function (d) {
+                            if (d.Type == 1) {
+                                return '<span class="layui-badge layui-bg-green">打赏礼物</span>'
+                            } else if (d.Type == 2) {
+                                return '<span class="layui-badge layui-bg-orange">房间扣费</span>'
+                            } else {
+                                return ' <span class="layui-badge">计时扣费</span>'
+                            }
                         }
                     }
                     , { field: 'totalamount', title: '总金额', totalRow: true }

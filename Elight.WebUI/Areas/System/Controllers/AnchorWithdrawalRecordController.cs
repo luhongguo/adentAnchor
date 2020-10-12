@@ -54,6 +54,15 @@ namespace Elight.WebUI.Areas.System.Controllers
         [HttpPost, AuthorizeChecked, ValidateAntiForgeryToken]
         public ActionResult Form(SysAnchorWithdrawalRecordEntity model)
         {
+            var agentModel = new SysUserAnchorLogic().GetAnchorBalance(model.AnchorID);
+            if (agentModel == null)
+            {
+                return Error("主播不存在!");
+            }
+            if (agentModel.agentGold / 10 < model.WithdrawalAmount)
+            {
+                return Error("提现金额不可大于余额!可提现余额：" + agentModel.agentGold / 10);
+            }
             int row = sysAnchorWithdrawalRecordLogic.Insert(model);
             return row > 0 ? Success() : Error();
         }
@@ -107,9 +116,9 @@ namespace Elight.WebUI.Areas.System.Controllers
                 {
                     return Error("主播不存在!");
                 }
-                if (agentModel.agentGold < model.WithdrawalAmount)
+                if (agentModel.agentGold/10 < model.WithdrawalAmount)
                 {
-                    return Error("提现金额不可大于余额!可提现余额：" + agentModel.gold);
+                    return Error("提现金额不可大于余额!可提现余额：" + agentModel.gold/10);
                 }
                 row = sysAnchorWithdrawalRecordLogic.Update(model, agentModel);
             }

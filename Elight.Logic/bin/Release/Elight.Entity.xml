@@ -244,6 +244,11 @@
             打赏时间
             </summary>
         </member>
+        <member name="P:Elight.Entity.Model.TipIncomeDetailModel.Type">
+            <summary>
+            类型1打赏礼物 2;房间扣费 ,3:计时扣费
+            </summary>
+        </member>
         <member name="T:Elight.Entity.Model.TipTemplateModel">
             <summary>
             打赏类
@@ -852,6 +857,26 @@
         <member name="P:Elight.Entity.Sys.SysCategoryEntity.CreateTime">
             <summary>
             创建时间
+            </summary>
+        </member>
+        <member name="T:Elight.Entity.Sys.SysConfigEntity">
+            <summary>
+            主播基本信息
+            </summary>
+        </member>
+        <member name="P:Elight.Entity.Sys.SysConfigEntity.id">
+            <summary>
+            主键ID
+            </summary>
+        </member>
+        <member name="P:Elight.Entity.Sys.SysConfigEntity.name">
+            <summary>
+            key
+            </summary>
+        </member>
+        <member name="P:Elight.Entity.Sys.SysConfigEntity.values">
+            <summary>
+            值
             </summary>
         </member>
         <member name="T:Elight.Entity.Sys.SysIncomeEntity">

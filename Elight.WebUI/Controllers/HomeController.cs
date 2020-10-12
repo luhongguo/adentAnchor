@@ -95,7 +95,7 @@ namespace QingDai.WebUI.Controllers
         /// </summary>
         /// <returns></returns>
         [Route("Home/GetPermission")]
-        [HttpPost]
+        [HttpPost, LoginChecked]
         public ActionResult GetPermission()
         {
             var userId = OperatorProvider.Instance.Current.UserId;

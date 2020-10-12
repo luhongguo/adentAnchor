@@ -136,7 +136,7 @@ namespace Elight.Logic.Sys
                         ModifiedTime = DateTime.Now
                     }).Where(it => it.id == model.id).ExecuteCommand();
                     //更新主播余额
-                    db.Updateable<SysAnchorInfoEntity>().SetColumns(it => new SysAnchorInfoEntity { agentGold = agentModel.agentGold - model.WithdrawalAmount }).Where(it => it.aid == agentModel.aid).ExecuteCommand();
+                    db.Updateable<SysAnchorInfoEntity>().SetColumns(it => new SysAnchorInfoEntity { agentGold = agentModel.agentGold - model.WithdrawalAmount*10 }).Where(it => it.aid == agentModel.aid).ExecuteCommand();
                     db.Ado.CommitTran();
                 }
                 catch (Exception ex)

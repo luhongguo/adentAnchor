@@ -231,7 +231,7 @@ namespace Elight.Logic.Sys
                          {
                              Id = A.Id,
                              Account = A.Account,
-                             Balance = A.Balance,
+                             Balance = A.Balance/10,
                              RealName = A.RealName,
                              ShopName = C.Name,//接收角色名称
                              Avatar = A.Avatar,
