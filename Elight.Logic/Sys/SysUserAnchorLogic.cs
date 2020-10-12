@@ -397,6 +397,7 @@ namespace Elight.Logic.Sys
                           .Where((at, st, it) => at.ShopID == OperatorProvider.Instance.Current.ShopID)
                           .Where((at, st, it) => it.sendtime >= Convert.ToDateTime(dic["startTime"]) && it.sendtime < Convert.ToDateTime(dic["endTime"]))
                           .WhereIF(dic.ContainsKey("userName") && !string.IsNullOrEmpty(dic["userName"].ToString()), (at, st, it) => st.anchorName.Contains(dic["userName"].ToString()) || st.nickName.Contains(dic["userName"].ToString()))
+                          .WhereIF(dic.ContainsKey("RewardName") && !string.IsNullOrEmpty(dic["RewardName"].ToString()), (at, st, it) => it.username.Contains(dic["RewardName"].ToString()) || it.userNickname.Contains(dic["RewardName"].ToString()))
                           .WithCache(60);
                     sumTotalAmount = query.Clone().Sum((at, st, it) => it.totalamount);
                     res = query
@@ -411,7 +412,8 @@ namespace Elight.Logic.Sys
                               username = it.username,
                               sendtime = it.sendtime,
                               AnchorName = st.anchorName,
-                              AnchorNickName = st.nickName
+                              AnchorNickName = st.nickName,
+                              userNickname=it.userNickname
                           })
                          .OrderBy(" it.sendtime desc")
                          .ToPageList(parm.page, parm.limit, ref totalCount);
