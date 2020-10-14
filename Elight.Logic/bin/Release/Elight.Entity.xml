@@ -1139,6 +1139,11 @@
             打赏人
             </summary>
         </member>
+        <member name="P:Elight.Entity.Sys.TipEntity.userNickname">
+            <summary>
+            打赏人昵称
+            </summary>
+        </member>
         <member name="P:Elight.Entity.Sys.TipEntity.ratio">
             <summary>
             比率
