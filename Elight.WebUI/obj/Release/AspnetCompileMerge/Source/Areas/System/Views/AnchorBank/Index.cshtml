@@ -47,6 +47,20 @@
     </div>
 </script>
 <script type="text/javascript">
+    function show_img(t) {
+        var t = $(t).find("img");
+        //页面层
+        layer.open({
+            title: "头像",
+            type: 1,
+            area: ['300px', '300px'], //宽高
+            shadeClose: true, //开启遮罩关闭
+            end: function (index, layero) {
+                return false;
+            },
+            content: '<div style="text-align:center"><img src="' + $(t).attr('src') + '" height="200" width="200"/></div>'
+        });
+    }
     layui.use(['form', 'table'], function () {
         var form = layui.form;
         var table = layui.table;
@@ -63,10 +77,6 @@
                     { type: 'checkbox' }
                     , { field: 'AgentName', title: '主播账号' }
                     , { field: 'NickName', title: '主播昵称' }
-                    , { field: 'bankano', title: '支付账号' }
-                    , { field: 'CategoryCode', title: '支付名称' }
-                    , { field: 'address', title: '开户地址' }
-                    , { field: 'bankaccount', title: '开户人' }
                     , {
                         field: 'payType', title: '支付类型', templet: function (d) {
                             if (d.payType == 1) {
@@ -75,6 +85,19 @@
                                 return "支付宝"
                             } else {
                                 return "微信"
+                            }
+                        }
+                    }
+                    , { field: 'bankano', title: '支付账号' }
+                    , { field: 'CategoryCode', title: '支付名称' }
+                    , { field: 'address', title: '开户地址' }
+                    , { field: 'bankaccount', title: '开户人' }
+                    , {
+                        field: 'ImgUrl', title: '支付图片', templet: function (d) {
+                            if (d.payType != 1) {
+                                return '<div onclick="show_img(this)"><img src="' + d.ImgUrl + '"/></div>'
+                            } else {
+                                return "";
                             }
                         }
                     }
