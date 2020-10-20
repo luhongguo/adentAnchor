@@ -48,14 +48,14 @@ namespace Elight.Logic.Sys
                           .Where((et, at, bt, ct, dt) => at.StartDate >= Convert.ToDateTime(dic["startTime"]) && at.StartDate <= Convert.ToDateTime(dic["endTime"]))
                           .WhereIF(dic.ContainsKey("AgentName") && !string.IsNullOrEmpty(dic["AgentName"].ToString()), (et, at, bt, ct, dt) => bt.Account.Contains(dic["AgentName"].ToString()))
                           .WhereIF(dic.ContainsKey("AnchorName") && !string.IsNullOrEmpty(dic["AnchorName"].ToString()), (et, at, bt, ct, dt) => ct.anchorName.Contains(dic["AnchorName"].ToString()) || ct.nickName.Contains(dic["AnchorName"].ToString()))
-                          .WithCache(60);
+                          .WhereIF(dic.ContainsKey("Type") && Convert.ToInt32(dic["Type"].ToString()) != -1, (et, at, bt, ct, dt) => dt.Type == Convert.ToInt32(dic["Type"].ToString()));
                     sumModel = query.Clone().Select((et, at, bt, ct, dt) => new TipIncomeDetailModel
                     {
                         AnchorIncome = SqlFunc.AggregateSum(at.AnchorIncome),
                         UserIncome = SqlFunc.AggregateSum(at.UserIncome),
                         PlatformIncome = SqlFunc.AggregateSum(at.PlatformIncome),
                         totalamount = SqlFunc.AggregateSum(dt.totalamount)
-                    }).First();
+                    }).WithCache(60).First();
                     res = query
                          .Select((et, at, bt, ct, dt) => new TipIncomeDetailModel
                          {
@@ -76,6 +76,7 @@ namespace Elight.Logic.Sys
                              Type = dt.Type
                          })
                          .OrderBy(" dt.sendtime desc")
+                         .WithCache(60)
                         .ToPageList(parm.page, parm.limit, ref totalCount);
                 }
             }

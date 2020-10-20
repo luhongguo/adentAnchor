@@ -143,7 +143,7 @@
                     }
                     , {
                         field: 'ImgUrl', title: '支付二维码', width: 120, templet: function (d) {
-                            if (d.payType != 1) {
+                            if (d.payType == 3 || d.payType == 2) {
                                 return '<div onclick="show_img(this)"><img src="' + d.ImgUrl + '"/></div>'
                             } else {
                                 return "";
@@ -246,7 +246,7 @@
         var t = $(t).find("img");
         //页面层
         layer.open({
-            title: "头像",
+            title: "支付图片",
             type: 1,
             area: ['300px', '300px'], //宽高
             shadeClose: true, //开启遮罩关闭

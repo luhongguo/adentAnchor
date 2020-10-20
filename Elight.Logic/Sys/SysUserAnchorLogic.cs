@@ -398,8 +398,9 @@ namespace Elight.Logic.Sys
                           .Where((at, st, it) => it.sendtime >= Convert.ToDateTime(dic["startTime"]) && it.sendtime < Convert.ToDateTime(dic["endTime"]))
                           .WhereIF(dic.ContainsKey("userName") && !string.IsNullOrEmpty(dic["userName"].ToString()), (at, st, it) => st.anchorName.Contains(dic["userName"].ToString()) || st.nickName.Contains(dic["userName"].ToString()))
                           .WhereIF(dic.ContainsKey("RewardName") && !string.IsNullOrEmpty(dic["RewardName"].ToString()), (at, st, it) => it.username.Contains(dic["RewardName"].ToString()) || it.userNickname.Contains(dic["RewardName"].ToString()))
-                          .WithCache(60);
-                    sumTotalAmount = query.Clone().Sum((at, st, it) => it.totalamount);
+                          .WhereIF(dic.ContainsKey("Type") && Convert.ToInt32(dic["Type"].ToString()) != -1, (at, st, it) => it.Type == Convert.ToInt32(dic["Type"].ToString()));
+                        
+                    sumTotalAmount = query.Clone().WithCache(60).Sum((at, st, it) => it.totalamount);
                     res = query
                           .Select((at, st, it) => new TipEntity
                           {
@@ -416,6 +417,7 @@ namespace Elight.Logic.Sys
                               userNickname=it.userNickname
                           })
                          .OrderBy(" it.sendtime desc")
+                          .WithCache(60)
                          .ToPageList(parm.page, parm.limit, ref totalCount);
                 }
             }
