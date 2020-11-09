@@ -64,6 +64,11 @@
             是否采集 0否1是
             </summary>
         </member>
+        <member name="P:Elight.Entity.Model.HourModel.seqid">
+            <summary>
+            主键id
+            </summary>
+        </member>
         <member name="P:Elight.Entity.Model.HourModel.AnchorName">
             <summary>
             账号
@@ -107,6 +112,11 @@
         <member name="P:Elight.Entity.Model.HourModel.source">
             <summary>
             来源 来源  0：腾讯，1：阿里
+            </summary>
+        </member>
+        <member name="P:Elight.Entity.Model.HourModel.flvurl">
+            <summary>
+            推流地址
             </summary>
         </member>
         <member name="T:Elight.Entity.Model.IncomeTemplateModel">
@@ -632,6 +642,11 @@
         <member name="P:Elight.Entity.Sys.SysAnchor.status">
             <summary>
             直播状态
+            </summary>
+        </member>
+        <member name="P:Elight.Entity.Sys.SysAnchor.shopName">
+            <summary>
+            商户名称
             </summary>
         </member>
         <member name="T:Elight.Entity.Sys.SysAnchorBankEntity">

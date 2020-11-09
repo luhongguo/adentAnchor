@@ -103,6 +103,7 @@ namespace Elight.WebUI.Areas.System.Controllers
             int row = userLogic.Delete(userIds.ToStrArray());
             userRoleRelationLogic.Delete(userIds.ToStrArray());
             userLogOnLogic.Delete(userIds.ToStrArray());
+            userLogic.DeleteRebateByUserID(userIds.ToStrArray());
             return row > 0 ? Success() : Error();
         }
 

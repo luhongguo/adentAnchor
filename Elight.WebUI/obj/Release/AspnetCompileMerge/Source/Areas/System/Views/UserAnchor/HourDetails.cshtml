@@ -102,6 +102,7 @@
                 , page: true //开启分页
                 , where: where
                 , totalRow: true
+                , height: 580
                 , cols: [[ //表头
                     { field: 'AnchorName', title: '主播账号', totalRowText: '合计：' }
                     , { field: 'NickName', title: '主播昵称' }
@@ -131,6 +132,7 @@
                     , limitName: 'parm.limit' //每页数据量的参数名，默认：limit
                 }
                 , limit: 10
+                , limits: [15, 50, 100, 200, 500, 1000, 2000, 4000]
                 , id: "report"
             });
         }
