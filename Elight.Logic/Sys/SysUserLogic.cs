@@ -10,6 +10,7 @@ using Elight.Utility.Operator;
 using Elight.Utility.Security;
 using Elight.Utility.Extension;
 using Elight.Utility.Log;
+using Elight.Utility.Model;
 
 namespace Elight.Logic.Sys
 {
@@ -50,7 +51,24 @@ namespace Elight.Logic.Sys
                 }).First();
             }
         }
-
+        /// <summary>
+        /// 获取用户返点
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public UserRebateModel GetUserRebate(string account)
+        {
+            using (var db = GetInstance())
+            {
+                return db.Queryable<SysUser, SysRebateEntity>((A, B) => new
+                      object[] {JoinType.Left, A.Id == B.UserID }).Where((A) => A.Account == account).Select((A, B) => new UserRebateModel
+                      {
+                          Id = A.Id,
+                          TipRebate = B.TipRebate,
+                          HourRebate = B.HourRebate
+                      }).First();
+            }
+        }
         /// <summary>
         /// 验证该商户下 用户是否存在
         /// </summary>

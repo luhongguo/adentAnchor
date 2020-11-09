@@ -70,6 +70,17 @@ namespace Elight.WebUI.Areas.System.Controllers
             {
                 return Error("返点不能小于0");
             }
+            var agentModel = new SysUserLogic().GetUserRebate(model.UserAccount);
+            var checkTipRebate = 100 - agentModel.TipRebate;
+            if (model.TipRebate > checkTipRebate)
+            {
+                return Error("平台礼物返点为" + agentModel.TipRebate + ",上级礼物返点必须<=" + checkTipRebate);
+            }
+            var checkHourRebate = 100 - agentModel.HourRebate;
+            if (model.HourRebate > checkHourRebate)
+            {
+                return Error("平台工时返点为" + agentModel.HourRebate + ",上级工时返点必须<=" + checkHourRebate);
+            }
             if (model.id == 0)
             {
                 model.AnchorName = model.AnchorName.Trim();
@@ -83,7 +94,6 @@ namespace Elight.WebUI.Areas.System.Controllers
                 {
                     return Error("主播已有返点信息，不可重复添加");
                 }
-                var agentModel = new SysUserLogic().CheckUserName(model.UserAccount);
                 if (agentModel == null)
                 {
                     return Error("上级账号不存在!");
