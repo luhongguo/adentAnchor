@@ -40,7 +40,7 @@ namespace Elight.Logic.Sys
                 {
                     result = db.Queryable<SysShopAnchorEntity, SysAnchor, SysAnchorInfoEntity>((st, it, at) => new object[] { JoinType.Left, st.AnchorID == it.id, JoinType.Left, it.id == at.aid })
                                 .Where((st, it) => st.ShopID == OperatorProvider.Instance.Current.ShopID)
-                                .WhereIF(dic.ContainsKey("Status") && Convert.ToInt32(dic["Status"]) != -1, (st, it, at) => at.status == (AnchorStatus)Convert.ToInt32(dic["Status"]))
+                                .WhereIF(dic.ContainsKey("Status") && Convert.ToInt32(dic["Status"]) != -1, (st, it, at) => at.status == (AnchorStatusEnum)Convert.ToInt32(dic["Status"]))
                                 .WhereIF(dic.ContainsKey("Name") && !string.IsNullOrEmpty(dic["Name"].ToString()), (st, it, at) => it.anchorName.Contains(dic["Name"].ToString()) || it.nickName.Contains(dic["Name"].ToString()))
                                 .WhereIF(dic.ContainsKey("startTime") && !string.IsNullOrEmpty(dic["startTime"].ToString()) && !string.IsNullOrEmpty(dic["endTime"].ToString()), (st, it, at) => it.createTime >= Convert.ToDateTime(dic["startTime"]) && it.createTime < Convert.ToDateTime(dic["endTime"]))
                                 .Select((st, it, at) => new SysAnchor
@@ -49,7 +49,7 @@ namespace Elight.Logic.Sys
                                     anchorName = it.anchorName,
                                     nickName = it.nickName,
                                     headUrl = SqlFunc.IIF(it.headUrl.Contains("http"), it.headUrl, Image_CDN + it.headUrl),
-                                    balance = at.agentGold / 10,
+                                    balance = at.agentGold,
                                     follow = at.follow,
                                     birthday = it.birthday,
                                     status = at.status,
@@ -399,7 +399,7 @@ namespace Elight.Logic.Sys
                           .WhereIF(dic.ContainsKey("userName") && !string.IsNullOrEmpty(dic["userName"].ToString()), (at, st, it) => st.anchorName.Contains(dic["userName"].ToString()) || st.nickName.Contains(dic["userName"].ToString()))
                           .WhereIF(dic.ContainsKey("RewardName") && !string.IsNullOrEmpty(dic["RewardName"].ToString()), (at, st, it) => it.username.Contains(dic["RewardName"].ToString()) || it.userNickname.Contains(dic["RewardName"].ToString()))
                           .WhereIF(dic.ContainsKey("Type") && Convert.ToInt32(dic["Type"].ToString()) != -1, (at, st, it) => it.Type == Convert.ToInt32(dic["Type"].ToString()));
-                        
+
                     sumTotalAmount = query.Clone().WithCache(60).Sum((at, st, it) => it.totalamount);
                     res = query
                           .Select((at, st, it) => new TipEntity
@@ -414,7 +414,7 @@ namespace Elight.Logic.Sys
                               sendtime = it.sendtime,
                               AnchorName = st.anchorName,
                               AnchorNickName = st.nickName,
-                              userNickname=it.userNickname
+                              userNickname = it.userNickname
                           })
                          .OrderBy(" it.sendtime desc")
                           .WithCache(60)
@@ -494,7 +494,8 @@ namespace Elight.Logic.Sys
                               begintime = ct.ontime,
                               endtime = ct.uptime,
                               duration = ct.livetime,
-                              islive = SqlFunc.IIF(SqlFunc.IsNullOrEmpty(ct.uptime), 1, 0)
+                              islive = SqlFunc.IIF(SqlFunc.IsNullOrEmpty(ct.uptime), 1, 0),
+                              status = ct.status
                           })
                           .OrderBy(" ct.ontime desc")
                           .ToPageList(parm.page, parm.limit, ref totalCount);

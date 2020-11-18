@@ -1,4 +1,5 @@
-﻿using Elight.Entity.Model;
+﻿using Elight.Entity.Enum;
+using Elight.Entity.Model;
 using Elight.Entity.Sys;
 using Elight.Logic.Base;
 using Elight.Utility.Log;
@@ -45,10 +46,11 @@ namespace Elight.Logic.Sys
                                 JoinType.Left,at.orderno==dt.orderno
                       })
                           .Where((et, at, bt, ct, dt) => et.ShopID == OperatorProvider.Instance.Current.ShopID)
-                          .Where((et, at, bt, ct, dt) => at.StartDate >= Convert.ToDateTime(dic["startTime"]) && at.StartDate <= Convert.ToDateTime(dic["endTime"]))
+                          .Where((et, at, bt, ct, dt) => at.StartDate >= Convert.ToDateTime(dic["startTime"]) && at.StartDate < Convert.ToDateTime(dic["endTime"]).AddDays(1))
                           .WhereIF(dic.ContainsKey("AgentName") && !string.IsNullOrEmpty(dic["AgentName"].ToString()), (et, at, bt, ct, dt) => bt.Account.Contains(dic["AgentName"].ToString()))
                           .WhereIF(dic.ContainsKey("AnchorName") && !string.IsNullOrEmpty(dic["AnchorName"].ToString()), (et, at, bt, ct, dt) => ct.anchorName.Contains(dic["AnchorName"].ToString()) || ct.nickName.Contains(dic["AnchorName"].ToString()))
-                          .WhereIF(dic.ContainsKey("Type") && Convert.ToInt32(dic["Type"].ToString()) != -1, (et, at, bt, ct, dt) => dt.Type == Convert.ToInt32(dic["Type"].ToString()));
+                          .WhereIF(dic.ContainsKey("Type") && Convert.ToInt32(dic["Type"].ToString()) != -1, (et, at, bt, ct, dt) => at.TipType == (TipTypeEnum)Convert.ToInt32(dic["Type"].ToString()))
+                          .WhereIF(dic.ContainsKey("incomeType") && Convert.ToInt32(dic["incomeType"].ToString()) != -1, (et, at, bt, ct, dt) => at.IncomeType == (IncomeTypeEnum)Convert.ToInt32(dic["incomeType"].ToString()));
                     sumModel = query.Clone().Select((et, at, bt, ct, dt) => new TipIncomeDetailModel
                     {
                         AnchorIncome = SqlFunc.AggregateSum(at.AnchorIncome),
@@ -68,12 +70,10 @@ namespace Elight.Logic.Sys
                              UserRebate = at.UserRebate,
                              PlatformRebate = at.PlatformRebate,
                              orderno = dt.orderno,
-                             giftname = dt.giftname,
-                             price = dt.price,
-                             quantity = dt.quantity,
                              totalamount = dt.totalamount,
-                             sendtime = dt.sendtime,
-                             Type = dt.Type
+                             CreateTime = at.CreateTime,
+                             Type = at.TipType,
+                             incomeType = at.IncomeType,
                          })
                          .OrderBy(" dt.sendtime desc")
                          .WithCache(60)

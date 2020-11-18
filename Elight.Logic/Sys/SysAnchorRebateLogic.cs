@@ -55,7 +55,10 @@ namespace Elight.Logic.Sys
                                    CreateTime = gt.CreateTime,
                                    AnchorName = it.anchorName,
                                    AnchorNickName = it.nickName,
-                                   UserAccount = at.Account
+                                   UserAccount = at.Account,
+                                   LiveTime = gt.LiveTime,
+                                   Salary = gt.Salary,
+                                   IsWorkHours = gt.IsWorkHours
                                })
                                .ToPageList(parm.page, parm.limit, ref totalCount);
                 }
@@ -84,7 +87,10 @@ namespace Elight.Logic.Sys
                         AnchorNickName = B.nickName,
                         TipRebate = A.TipRebate,
                         HourRebate = A.HourRebate,
-                        UserAccount = C.Account
+                        UserAccount = C.Account,
+                        LiveTime = A.LiveTime,
+                        Salary = A.Salary,
+                        IsWorkHours = A.IsWorkHours
                     }).First();
             }
         }
@@ -127,7 +133,10 @@ namespace Elight.Logic.Sys
                     return db.Updateable(model).UpdateColumns(it => new
                     {
                         it.TipRebate,
-                        it.HourRebate
+                        it.HourRebate,
+                        it.LiveTime,
+                        it.Salary,
+                        it.IsWorkHours
                     }).ExecuteCommand();
                 }
             }
