@@ -240,10 +240,12 @@ namespace Elight.Logic.Sys
                 }
                 using (var db = GetSqlSugarDB(DbConnType.QPAnchorRecordDB))
                 {
-                    var query = db.Queryable<SysShopAnchorEntity, SysAnchor, SysAnchorInfoEntity, SysIncomeEntity>((at, st, bt, it) => new object[] {
+                    var query = db.Queryable<SysShopAnchorEntity, SysAnchor, SysAnchorInfoEntity, SysIncomeEntity,SysAnchorRebateEntity>((at, st, bt, it,rt) => new object[] {
                         JoinType.Left,at.AnchorID==st.id,
                         JoinType.Left,st.id==bt.aid,
-                        JoinType.Left, st.id == it.AnchorID })
+                        JoinType.Left, st.id == it.AnchorID,
+                        JoinType.Left,st.id==rt.AnchorID
+                    })
                         .Where((at, st, bt, it) => at.ShopID == OperatorProvider.Instance.Current.ShopID)
                         .Where((at, st, bt, it) => it.opdate >= Convert.ToDateTime(dic["startTime"]) && it.opdate < Convert.ToDateTime(dic["endTime"]))
                         .WhereIF(dic.ContainsKey("Name") && !string.IsNullOrEmpty(dic["Name"].ToString()), (at, st, it) => st.anchorName.Contains(dic["Name"].ToString()) || st.nickName.Contains(dic["Name"].ToString()))
@@ -257,8 +259,8 @@ namespace Elight.Logic.Sys
                         agentHour_income = SqlFunc.AggregateSum(it.agentHour_income),
                         livetime = SqlFunc.AggregateSum(it.livetime),
                     }).First();
-                    res = query.GroupBy((at, st, bt, it) => new { at.AnchorID, st.anchorName, st.nickName, bt.agentGold })
-                          .Select((at, st, bt, it) => new IncomeTemplateModel
+                    res = query.GroupBy((at, st, bt, it,rt) => new { at.AnchorID, st.anchorName, st.nickName, bt.agentGold, rt.IsWorkHours, rt.LiveTime, rt.Salary, rt.TipRebate, rt.HourRebate })
+                          .Select((at, st, bt, it,rt) => new IncomeTemplateModel
                           {
                               AnchorID = at.AnchorID,
                               AnchorName = st.anchorName,
@@ -269,7 +271,12 @@ namespace Elight.Logic.Sys
                               hour_income = SqlFunc.AggregateSum(it.hour_income),
                               Platform_income = SqlFunc.AggregateSum(it.Platform_income),
                               agentHour_income = SqlFunc.AggregateSum(it.agentHour_income),
-                              livetime = SqlFunc.AggregateSum(it.livetime)
+                              livetime = SqlFunc.AggregateSum(it.livetime),
+                              IsWorkHours = rt.IsWorkHours,
+                              MinimumLiveTime = rt.LiveTime,
+                              Salary = rt.Salary,
+                              TipRebate = rt.TipRebate,
+                              HourRebate = rt.HourRebate
                           })
                           .OrderBy(" sum(it.tip_income) desc")
                           .ToPageList(parm.page, parm.limit, ref totalCount);

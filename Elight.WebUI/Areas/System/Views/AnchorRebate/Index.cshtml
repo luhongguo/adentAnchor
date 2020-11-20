@@ -69,10 +69,10 @@
                     , { field: 'TipRebate', title: '礼物返点(%)' }
                     , { field: 'HourRebate', title: '工时返点(%)' }
                     , { field: 'LiveTime', title: '最低直播时长' }
-                    , { field: 'Salary', title: '薪资' }
+                    , { field: 'Salary', title: '工时薪资' }
                     , {
-                        field: 'IsWorkHours', title: '是否计算工时', templet: function (d) {
-                            if (d.islive == 1) {
+                        field: 'IsWorkHours', title: '是否核算工时', templet: function (d) {
+                            if (d.IsWorkHours == 1) {
                                 return '<span class="label label-success label-sm">是</span>';
                             } else {
                                 return '<span class="label label-dark label-sm">否</span>';
