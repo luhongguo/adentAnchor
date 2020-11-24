@@ -58,7 +58,8 @@ namespace Elight.Logic.Sys
                                    UserAccount = at.Account,
                                    LiveTime = gt.LiveTime,
                                    Salary = gt.Salary,
-                                   IsWorkHours = gt.IsWorkHours
+                                   IsWorkHours = gt.IsWorkHours,
+                                   GiftAmount = gt.GiftAmount
                                })
                                .ToPageList(parm.page, parm.limit, ref totalCount);
                 }
@@ -90,7 +91,8 @@ namespace Elight.Logic.Sys
                         UserAccount = C.Account,
                         LiveTime = A.LiveTime,
                         Salary = A.Salary,
-                        IsWorkHours = A.IsWorkHours
+                        IsWorkHours = A.IsWorkHours,
+                        GiftAmount = A.GiftAmount
                     }).First();
             }
         }
@@ -136,7 +138,8 @@ namespace Elight.Logic.Sys
                         it.HourRebate,
                         it.LiveTime,
                         it.Salary,
-                        it.IsWorkHours
+                        it.IsWorkHours,
+                        it.GiftAmount
                     }).ExecuteCommand();
                 }
             }

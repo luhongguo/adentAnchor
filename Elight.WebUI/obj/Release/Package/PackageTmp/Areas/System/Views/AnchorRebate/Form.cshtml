@@ -2,6 +2,11 @@
     ViewBag.Title = "主播返点编辑";
     Layout = "~/Views/Shared/_Form.cshtml";
 }
+<style>
+    .layui-form-label {
+        width: 140px
+    }
+</style>
 <form id="form" class="layui-form" style="margin-top: 25px">
     @Html.AntiForgeryToken()
     <div class="layui-form-item">
@@ -10,6 +15,14 @@
             <label class="layui-form-label label-required">主播账号</label>
             <div class="layui-input-inline">
                 <input type="text" name="AnchorName" lay-verify="required" placeholder="请输入主播账号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label label-required">上级账号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="UserAccount" lay-verify="required" placeholder="请输入上级账号" autocomplete="off" class="layui-input">
             </div>
         </div>
     </div>
@@ -32,11 +45,29 @@
             <label class="layui-form-label" style="width:5px">%</label>
         </div>
     </div>
+
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label label-required">上级账号</label>
+            <label class="layui-form-label label-required">最低直播时长(小时)</label>
             <div class="layui-input-inline">
-                <input type="text" name="UserAccount" lay-verify="required" placeholder="请输入上级账号" autocomplete="off" class="layui-input">
+                <input type="number" name="LiveTime" lay-verify="required" placeholder="请输入直播时长" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label label-required">工时薪资(花币)</label>
+            <div class="layui-input-inline">
+                <input type="text" name="Salary" lay-verify="required" placeholder="请输入薪资" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label label-required">工时核算</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="IsWorkHours" value="1" title="开">
+                <input type="radio" name="IsWorkHours" value="0" title="关" checked>
             </div>
         </div>
     </div>

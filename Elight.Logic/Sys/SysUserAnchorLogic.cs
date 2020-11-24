@@ -259,7 +259,7 @@ namespace Elight.Logic.Sys
                         agentHour_income = SqlFunc.AggregateSum(it.agentHour_income),
                         livetime = SqlFunc.AggregateSum(it.livetime),
                     }).First();
-                    res = query.GroupBy((at, st, bt, it,rt) => new { at.AnchorID, st.anchorName, st.nickName, bt.agentGold, rt.IsWorkHours, rt.LiveTime, rt.Salary, rt.TipRebate, rt.HourRebate })
+                    res = query.GroupBy((at, st, bt, it,rt) => new { at.AnchorID, st.anchorName, st.nickName, bt.agentGold, rt.IsWorkHours, rt.LiveTime, rt.Salary, rt.TipRebate, rt.HourRebate,rt.GiftAmount })
                           .Select((at, st, bt, it,rt) => new IncomeTemplateModel
                           {
                               AnchorID = at.AnchorID,
@@ -276,7 +276,8 @@ namespace Elight.Logic.Sys
                               MinimumLiveTime = rt.LiveTime,
                               Salary = rt.Salary,
                               TipRebate = rt.TipRebate,
-                              HourRebate = rt.HourRebate
+                              HourRebate = rt.HourRebate,
+                              GiftAmount = rt.GiftAmount
                           })
                           .OrderBy(" sum(it.tip_income) desc")
                           .ToPageList(parm.page, parm.limit, ref totalCount);
